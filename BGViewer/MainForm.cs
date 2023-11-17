@@ -1091,10 +1091,11 @@ namespace standScripter
 
 				if( m_activeDataSet[panelNo].m_copyStr != "" ) fileName =  m_activeDataSet[panelNo].m_copyStr;
 				
-				string copyString = textBox3.Text;
+				//string copyString = textBox3.Text;
+				string copyString = "(0)";
 
 				//Ctrlキーを押しながら右クリック、または中クリックでファイル名のみ取得のインスタントコピーになる
-				//if ((Control.ModifierKeys & Keys.Control) == Keys.Control || buttonType == 2 )　copyString = "(1)";
+				//if ((Control.ModifierKeys & Keys.Control) == Keys.Control || buttonType == 2 )　copyString = "(0)";
 				if ( buttonType == 2 )
 					copyString =  System.IO.Path.GetFileNameWithoutExtension(m_activeDataSet[panelNo].m_fileName);
 
@@ -1199,7 +1200,7 @@ namespace standScripter
 			} 
 			else
 			{
-				bool		isEdit		= false;// (Control.ModifierKeys  == Keys.Control);
+				bool			isEdit		= false;// (Control.ModifierKeys  == Keys.Control);
 				FormGVPreview	tmpForm2	= new FormGVPreview( this, m_activeDataSet[panelNo].m_fileName, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, isEdit);
 
 				tmpForm2.ShowDialog();
