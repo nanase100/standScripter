@@ -46,11 +46,12 @@
 			this.dockPanel1.Name = "dockPanel1";
 			this.dockPanel1.Size = new System.Drawing.Size(800, 426);
 			this.dockPanel1.TabIndex = 0;
+			
 			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.dockParentMenu});
+            this.dockParentMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -60,9 +61,9 @@
 			// dockParentMenu
 			// 
 			this.dockParentMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.プレビューの表示非表示ToolStripMenuItem,
-			this.スクリプトの表示非表示ToolStripMenuItem,
-			this.ファイル一覧の表示非表示ToolStripMenuItem});
+            this.プレビューの表示非表示ToolStripMenuItem,
+            this.スクリプトの表示非表示ToolStripMenuItem,
+            this.ファイル一覧の表示非表示ToolStripMenuItem});
 			this.dockParentMenu.Name = "dockParentMenu";
 			this.dockParentMenu.Size = new System.Drawing.Size(150, 20);
 			this.dockParentMenu.Text = "各ウインドウの表示切り替え";

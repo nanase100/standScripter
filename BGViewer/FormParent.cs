@@ -14,7 +14,7 @@ namespace standScripter
 {
 	public partial class FormParent : Form
 	{
-		private MainForm					m_parent		= null;
+		private MainForm				m_parent		= null;
 		public DockFormScriptList		m_scriptList	= null;
 		public DockFormPreview			m_preview		= null;
 		public DockFormBlockList		m_blockList		= null;
@@ -26,12 +26,18 @@ namespace standScripter
 			m_parent = parent;
 		}
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void FormParent_Load(object sender, EventArgs e)
 		{
 			m_scriptList = new DockFormScriptList();
 			m_scriptList.m_parent = m_parent;
 			m_scriptList.Text = "スクリプト一覧";
-			//m_scriptList.Show(dockPanel1);
+			//m_scriptList.Show(dockPanel1);xv
 
 			m_preview = new DockFormPreview();
 			m_preview.m_parent = m_parent;
@@ -52,6 +58,9 @@ namespace standScripter
 			
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void StockPos()
 		{
 
@@ -140,9 +149,6 @@ namespace standScripter
 				case "DockFormScriptListStr":	return m_scriptList;	break;
 				case "DockFormPreviewStr":		return m_preview;		break;
 			}
-			
-			Console.WriteLine(persistString);
-			Console.WriteLine("abc");
 
 			return null;
 		}
@@ -182,7 +188,6 @@ namespace standScripter
 		{
 			if(m_scriptList.IsHidden) { m_scriptList.Show(); } else { m_scriptList.Hide(); } // Form2 の再表、非表示切り替え
 		}
-
 
 	}
 }

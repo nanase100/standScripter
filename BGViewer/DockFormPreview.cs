@@ -111,10 +111,28 @@ namespace standScripter
 
 		private void DockFormPreview_KeyDown(object sender, KeyEventArgs e)
 		{
-			if( e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.Enter ) m_parent.formParent.m_blockList.NextMessage(true);
+			if( e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.Enter|| e.KeyCode == Keys.Down ) m_parent.formParent.m_blockList.NextMessage(true);
+
+			if( e.KeyCode == Keys.Up ) m_parent.formParent.m_blockList.NextMessage(false);
 
 			e.Handled = true;
 		}
+
+		protected override bool ProcessDialogKey(Keys keyData)
+		{
+		  switch (keyData)
+		  {
+			case Keys.Down:
+			case Keys.Up:
+//			case Keys.Left:
+//			case Keys.Right:
+				return false;
+			default:
+			  return base.ProcessDialogKey(keyData);
+			  
+		  }
+		  return true;
+		} 
 
 		private void DockFormPreview_SizeChanged(object sender, EventArgs e)
 		{

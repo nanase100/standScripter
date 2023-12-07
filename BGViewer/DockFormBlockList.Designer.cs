@@ -51,6 +51,8 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+			this.chBoxAutoSetPos = new System.Windows.Forms.CheckBox();
+			this.chBoxGuardPosDup = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -61,6 +63,7 @@
 			// 
 			// dataGridView1
 			// 
+			this.dataGridView1.AllowDrop = true;
 			this.dataGridView1.AllowUserToAddRows = false;
 			this.dataGridView1.AllowUserToDeleteRows = false;
 			this.dataGridView1.AllowUserToResizeRows = false;
@@ -92,6 +95,8 @@
 			this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
 			this.dataGridView1.CurrentCellChanged += new System.EventHandler(this.dataGridView1_CurrentCellChanged);
 			this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
+			this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
+			this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
 			this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
 			// 
 			// message
@@ -162,18 +167,18 @@
 			this.groupBox1.Controls.Add(this.button2);
 			this.groupBox1.Location = new System.Drawing.Point(12, 9);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(127, 49);
+			this.groupBox1.Size = new System.Drawing.Size(81, 49);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "セルサイズの拡大縮小";
+			this.groupBox1.Text = "セルサイズ";
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(62, 18);
+			this.button3.Location = new System.Drawing.Point(44, 18);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(50, 25);
+			this.button3.Size = new System.Drawing.Size(32, 25);
 			this.button3.TabIndex = 1;
-			this.button3.Text = "縮小－";
+			this.button3.Text = "－";
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
@@ -181,9 +186,9 @@
 			// 
 			this.button2.Location = new System.Drawing.Point(6, 18);
 			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(50, 25);
+			this.button2.Size = new System.Drawing.Size(32, 25);
 			this.button2.TabIndex = 0;
-			this.button2.Text = "拡大＋";
+			this.button2.Text = "＋";
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
@@ -202,20 +207,20 @@
 			// 
 			this.groupBox2.Controls.Add(this.button5);
 			this.groupBox2.Controls.Add(this.button6);
-			this.groupBox2.Location = new System.Drawing.Point(145, 9);
+			this.groupBox2.Location = new System.Drawing.Point(99, 9);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(124, 49);
+			this.groupBox2.Size = new System.Drawing.Size(80, 49);
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "フォントの拡大縮小";
+			this.groupBox2.Text = "フォント";
 			// 
 			// button5
 			// 
-			this.button5.Location = new System.Drawing.Point(62, 18);
+			this.button5.Location = new System.Drawing.Point(41, 18);
 			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(50, 25);
+			this.button5.Size = new System.Drawing.Size(32, 25);
 			this.button5.TabIndex = 1;
-			this.button5.Text = "縮小－";
+			this.button5.Text = "－";
 			this.button5.UseVisualStyleBackColor = true;
 			this.button5.Click += new System.EventHandler(this.button5_Click);
 			// 
@@ -223,9 +228,9 @@
 			// 
 			this.button6.Location = new System.Drawing.Point(6, 18);
 			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(50, 25);
+			this.button6.Size = new System.Drawing.Size(32, 25);
 			this.button6.TabIndex = 0;
-			this.button6.Text = "拡大＋";
+			this.button6.Text = "＋";
 			this.button6.UseVisualStyleBackColor = true;
 			this.button6.Click += new System.EventHandler(this.button6_Click);
 			// 
@@ -243,12 +248,13 @@
 			// 
 			this.groupBox4.Controls.Add(this.button1);
 			this.groupBox4.Controls.Add(this.textBox1);
-			this.groupBox4.Location = new System.Drawing.Point(275, 9);
+			this.groupBox4.Location = new System.Drawing.Point(290, 9);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(230, 49);
+			this.groupBox4.Size = new System.Drawing.Size(215, 49);
 			this.groupBox4.TabIndex = 10;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "検索";
+			this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
 			// 
 			// button1
 			// 
@@ -273,11 +279,33 @@
 			this.fileSystemWatcher1.EnableRaisingEvents = true;
 			this.fileSystemWatcher1.SynchronizingObject = this;
 			// 
+			// chBoxAutoSetPos
+			// 
+			this.chBoxAutoSetPos.AutoSize = true;
+			this.chBoxAutoSetPos.Location = new System.Drawing.Point(669, 15);
+			this.chBoxAutoSetPos.Name = "chBoxAutoSetPos";
+			this.chBoxAutoSetPos.Size = new System.Drawing.Size(196, 16);
+			this.chBoxAutoSetPos.TabIndex = 11;
+			this.chBoxAutoSetPos.Text = "立絵配置時に立位置自動設定する";
+			this.chBoxAutoSetPos.UseVisualStyleBackColor = true;
+			// 
+			// chBoxGuardPosDup
+			// 
+			this.chBoxGuardPosDup.AutoSize = true;
+			this.chBoxGuardPosDup.Location = new System.Drawing.Point(669, 37);
+			this.chBoxGuardPosDup.Name = "chBoxGuardPosDup";
+			this.chBoxGuardPosDup.Size = new System.Drawing.Size(168, 16);
+			this.chBoxGuardPosDup.TabIndex = 12;
+			this.chBoxGuardPosDup.Text = "立絵の位置の重複を防止する";
+			this.chBoxGuardPosDup.UseVisualStyleBackColor = true;
+			// 
 			// DockFormBlockList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1055, 494);
+			this.Controls.Add(this.chBoxGuardPosDup);
+			this.Controls.Add(this.chBoxAutoSetPos);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -296,6 +324,7 @@
 			this.groupBox4.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -323,5 +352,7 @@
 		private System.Windows.Forms.DataGridViewImageColumn colFace;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.IO.FileSystemWatcher fileSystemWatcher1;
+		private System.Windows.Forms.CheckBox chBoxAutoSetPos;
+		private System.Windows.Forms.CheckBox chBoxGuardPosDup;
 	}
 }

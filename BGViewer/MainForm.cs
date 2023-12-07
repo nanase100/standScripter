@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using HongliangSoft.Utilities.Gui;
 
 using System.Runtime.InteropServices;
+using Hnx8.ReadJEnc;
 
 namespace standScripter
 {
@@ -1216,41 +1217,17 @@ namespace standScripter
 		private void SetStand( string thumbName, int bankNo, string sizeType )
 		{
 
-			if( bankNo == 0 ) return;
-
-			bool isExist = false;
-			textStandData addTmp = null;
-
-			if( m_nowSelectBlockNo/2 >= formParent.m_blockList.m_messageBaseData.Count ) return;
-			int loopCount = formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].standDatas.Count;
-			
-			for( int i = 0; i < loopCount; i++ )
-			{
-				if( formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].standDatas[i].bankID == m_nowSelectBankNo )
-				{
-					addTmp = formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].standDatas[i];
-					isExist = true;
-					break;
-				}
-			}
-
-			if( addTmp == null ) addTmp = new textStandData();
-				
-			addTmp.bankID		= bankNo;
-			addTmp.standSize	= sizeType.Replace("_","");
-			addTmp.toolImgName	= thumbName;
-
-			if( isExist == false ) formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].standDatas.Add( addTmp);
+			formParent.m_blockList.SetStand( thumbName, bankNo, sizeType );
 		}
 
 		private void SetBG( string bgName )
 		{
-			formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].bgFileName = bgName;
+			formParent.m_blockList.SetBG(bgName);
 		}
 
-		private void SetFace( string bgName )
+		private void SetFace( string faceName )
 		{
-			formParent.m_blockList.m_messageBaseData[m_nowSelectBlockNo/2].faceFileName = bgName;
+			formParent.m_blockList.SetFace(faceName);
 		}
 		
 

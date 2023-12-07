@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hnx8.ReadJEnc;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,12 +17,12 @@ namespace standScripter
 	{
 
 
-		public List<textBlockData> m_messageBaseData = new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
-		public List<textBlockData> m_messageBlockGridList = new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
+		public List<textBlockData> m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
+		public List<textBlockData> m_messageBlockGridList	= new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
 
-		public MainForm m_parent;
-		private soundPlayer m_soundPlayer = null;
-		private string activeScriptName = "";
+		public MainForm			m_parent;
+		private soundPlayer		m_soundPlayer		= null;
+		private string			activeScriptName	= "";
 
 
 
@@ -90,7 +92,6 @@ namespace standScripter
 				for( int j = 1; j < dataGridView1.Columns.Count-1;j++)
 					dataGridView1.Rows[i].Cells[j].Value = null;
 			
-			
 			string	buff		= "";
 			string	bgPath		= "";
 			string	facePath	= "";
@@ -110,9 +111,8 @@ namespace standScripter
 					}
 
 					int nowRow = dataGridView1.Rows.Add();
-					dataGridView1.Rows[nowRow].Height = 10;
-
-					dataGridView1.Rows[nowRow-1].Cells[8].Value = tmp.preProc;
+					dataGridView1.Rows[nowRow].Height			= 10;
+					dataGridView1.Rows[nowRow-1].Cells[8].Value	= tmp.preProc;
 				}
 
 				if( tmp.bgFileName != "")
@@ -461,35 +461,35 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
 		{
+
+			bool isGuardPosDup = (bool)chBoxGuardPosDup.Checked;
 			switch( e.KeyCode)
 			{
 				//二人立ち絵の左右
-				case Keys.Q:		ChangeStandPos(posType.H2_LEFT);			break;
-				case Keys.W:		ChangeStandPos(posType.EMPTY);				break;
-				case Keys.E:		ChangeStandPos(posType.H2_RIGHT);			break;
+				case Keys.Q:		ChangeStandPos(posType.H2_LEFT,isGuardPosDup);			break;
+				case Keys.W:		ChangeStandPos(posType.EMPTY,isGuardPosDup);			break;
+				case Keys.E:		ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
 				
 				//三人立ち絵の左真ん中右
-				case Keys.A:		ChangeStandPos(posType.H3_LEFT);			break;
-				case Keys.S:		ChangeStandPos(posType.CENTER);				break;
-				case Keys.D:		ChangeStandPos(posType.H3_RIGHT);			break;
+				case Keys.A:		ChangeStandPos(posType.H3_LEFT,isGuardPosDup);			break;
+				case Keys.S:		ChangeStandPos(posType.CENTER,isGuardPosDup);			break;
+				case Keys.D:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
 
 				//ダブルクリック以外での呼び出し
 				case Keys.R:		StartCellEdit();							break;
 
-
-				case Keys.F:	if(e.Control == true) textBox1.Focus();	  break;
+				case Keys.F:	if(e.Control == true) textBox1.Focus();			break;
 
 				//セルコピペ
-				case Keys.X:	if(e.Control == true) CutCell();	  break;
-				case Keys.C:	if(e.Control == true) CopyCell();	  break;
-				case Keys.V:	if(e.Control == true) PasteCell();	  break;
+				case Keys.X:	if(e.Control == true) CutCell();				break;
+				case Keys.C:	if(e.Control == true) CopyCell();				break;
+				case Keys.V:	if(e.Control == true) PasteCell();				break;
 
 				case Keys.T:	SelectRangeStandMass(dataGridView1.CurrentCell.RowIndex,dataGridView1.CurrentCell.ColumnIndex);		break;
 
 				//コンパイル・実行
-				case Keys.F5:	RunGame();	  break;
-				case Keys.F7:	CompileNow();	  break;
-
+				case Keys.F5:	RunGame();			break;
+				case Keys.F7:	CompileNow();		break;
 
 				//立ち絵の削除
 				case Keys.Delete:
@@ -595,10 +595,10 @@ namespace standScripter
 
 
 		/// <summary>
-		/// 
+		/// 立ち絵の立ち位置変更命令
 		/// </summary>
 		/// <param name="newPos"></param>
-		public void ChangeStandPos( posType newPos )
+		public void ChangeStandPos( posType newPos, bool isGuardPosDup = false  )
 		{
 			int loopCount = dataGridView1.SelectedCells.Count;
 			int row = 0;
@@ -615,14 +615,17 @@ namespace standScripter
 				int swapBankID = -1;
 				int loopCount2 = m_messageBaseData[row].standDatas.Count;
 
-				for( int j = 0; j < loopCount2; j++ )
+				if( isGuardPosDup )
 				{
-					if (m_messageBaseData[row].standDatas[j].bankID != col )
+					for( int j = 0; j < loopCount2; j++ )
 					{
-						if( m_messageBaseData[row].standDatas[j].standPosType == newPos)
-						{ 
-							swapBankID = j;
-							break;
+						if (m_messageBaseData[row].standDatas[j].bankID != col )
+						{
+							if( m_messageBaseData[row].standDatas[j].standPosType == newPos)
+							{ 
+								swapBankID = j;
+								break;
+							}
 						}
 					}
 				}
@@ -661,8 +664,10 @@ namespace standScripter
 				col -= 1;
 
 				//移動先に別の立ち絵がある場合はスワップするための準備
+
 				int swapBankID = -1;
 				int loopCount2 = m_messageBaseData[row].standDatas.Count;
+
 
 				for( int j = 0; j < loopCount2; j++ )
 				{
@@ -675,6 +680,7 @@ namespace standScripter
 						}
 					}
 				}
+				
 
 				for( int j = 0; j < loopCount2; j++ )
 				{
@@ -733,6 +739,7 @@ namespace standScripter
 		{
 			if( e.Button == MouseButtons.Right )
 			{
+				
 			}
 		}
 
@@ -765,14 +772,6 @@ namespace standScripter
 
 			bool isChangeRow = (m_parent.m_nowSelectBlockNo == nowRow ?false:true);
 
-			//オプション行を選択した場合、自動でずらす
-			//if( nowRow % 2 != 0 )
-			//{
-			//	if( nowRow < m_parent.m_nowSelectBlockNo) nowRow--;
-			//	else if( nowRow +1 <= dataGridView1.Rows.Count )nowRow++;
-			//}
-			//
-
 			m_parent.m_nowSelectBlockNo = nowRow;
 			m_parent.m_nowSelectBankNo =  dataGridView1.CurrentCell.ColumnIndex-1;
 
@@ -789,7 +788,6 @@ namespace standScripter
 		{
 			dataGridView1.Enabled = isEnable;
 		}
-
 
 		public void SearchBlock( string messageText )
 		{
@@ -838,7 +836,7 @@ namespace standScripter
 
 		private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if( e.KeyChar== 13 )
+			if( e.KeyChar == (char)Keys.Enter )
 			{
 				e.Handled = true;
 				SearchBlock( textBox1.Text );
@@ -925,6 +923,73 @@ namespace standScripter
 				dataGridView1.Rows[i].Cells[col+1].Selected = true;
 			}
 		}
+
+
+
+
+
+		public void SetStand( string thumbName, int bankNo, string sizeType )
+		{
+			if( bankNo == 0 || dataGridView1.SelectedCells.Count == 0 ) return;
+
+			bool isExist = false;
+			textStandData addTmp = null;
+
+			int blockNo = dataGridView1.SelectedCells[0].RowIndex / 2;
+
+			if( blockNo >= m_messageBaseData.Count ) return;
+			int loopCount = m_messageBaseData[blockNo].standDatas.Count;
+			
+			for( int i = 0; i < loopCount; i++ )
+			{
+				if( m_messageBaseData[blockNo].standDatas[i].bankID == bankNo )
+				{
+					addTmp = m_messageBaseData[blockNo].standDatas[i];
+					isExist = true;
+					break;
+				}
+			}
+
+			if( addTmp == null ) addTmp = new textStandData();
+				
+			addTmp.bankID		= bankNo;
+			addTmp.standSize	= sizeType.Replace("_","");
+			addTmp.toolImgName	= thumbName;
+
+			if(chBoxAutoSetPos.Checked == true )
+			{
+				posType newPos = posType.CENTER;
+				switch(bankNo)
+				{
+					case 1: newPos = posType.H3_LEFT; break;
+					case 2: newPos = posType.H2_LEFT; break;
+					case 4: newPos = posType.H2_RIGHT; break;
+					case 5: newPos = posType.H3_RIGHT; break;
+				}
+				addTmp.standPosType	= newPos;
+			}
+			
+
+			if( isExist == false ) m_messageBaseData[blockNo].standDatas.Add( addTmp);
+		}
+
+
+		public void SetBG( string bgName )
+		{
+			if( dataGridView1.SelectedCells.Count == 0) return;
+			int blockNo = dataGridView1.SelectedCells[0].RowIndex / 2;
+			m_messageBaseData[blockNo].bgFileName = bgName;
+		}
+
+		public void SetFace( string bgName )
+		{
+			if( dataGridView1.SelectedCells.Count == 0) return;
+			int blockNo = dataGridView1.SelectedCells[0].RowIndex / 2;
+			m_messageBaseData[blockNo].faceFileName = bgName;
+		}
+		
+
+
 
 		protected override string GetPersistString()
 		{
@@ -1035,5 +1100,19 @@ namespace standScripter
 			
 		}
 
+		private void groupBox4_Enter(object sender, EventArgs e)
+		{
+
+		}
+
+		private void dataGridView1_DragDrop(object sender, DragEventArgs e)
+		{
+
+		}
+
+		private void dataGridView1_DragOver(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
 	}
 }
