@@ -173,4 +173,9 @@ namespace standScripter
 			return m_previewBitmapDictionary[fileName];
 		}
 	}
+
+
+
+
+
 }

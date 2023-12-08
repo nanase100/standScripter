@@ -1,5 +1,6 @@
 ﻿using Hnx8.ReadJEnc;
 using Microsoft.Win32;
+using PresentationControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +25,9 @@ namespace standScripter
 		private soundPlayer		m_soundPlayer		= null;
 		private string			activeScriptName	= "";
 
+		private StatusList _StatusList;
 
+		private ListSelectionWrapper<Status> StatusSelections;
 
 		//コピペ用データ
 		private string			m_copySrcBGname		= "";
@@ -56,13 +59,24 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void FormBlockList_Load(object sender, EventArgs e)
 		{
-			dataGridView1.AlternatingRowsDefaultCellStyle.BackColor	= Color.AliceBlue;
+			dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
 
+			InitDataGridView();
+
+			InitOptionChkCombo();
+
+		}
+
+		/// <summary>
+		/// メインのデータグリッド準備
+		/// </summary>
+		private void InitDataGridView()
+		{
 			dataGridView1.Columns[0].DefaultCellStyle.BackColor = Color.LightBlue;
 			//dataGridView1.Columns[0].DefaultCellStyle.WrapMode		= DataGridViewTriState.True;
 
 			dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-			
+
 			var tmp = dataGridView1.Rows.Add();
 
 			dataGridView1.RowTemplate.Height = 96;
@@ -78,7 +92,29 @@ namespace standScripter
 		}
 
 		/// <summary>
-		/// 
+		/// チェックボックス付きコンボボックス準備
+		/// </summary>
+		private void InitOptionChkCombo()
+		{
+			_StatusList = new StatusList();
+
+			_StatusList.Add(new Status(1, "立絵配置時に立位置自動設定する"));
+			_StatusList.Add(new Status(2, "立絵の位置の重複を防止する"));
+
+			StatusSelections = new ListSelectionWrapper<Status>(_StatusList, "Name");
+
+			StatusSelections[1].Selected = false;
+
+			checkBoxComboBox2.DataSource = StatusSelections;
+			checkBoxComboBox2.DisplayMemberSingleItem = "Name";
+			checkBoxComboBox2.DisplayMember = "NameConcatenated";
+
+			checkBoxComboBox2.ValueMember = "Selected";
+			checkBoxComboBox2.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+		}
+
+		/// <summary>
+		/// スクリプトブロック情報の立ち絵連続性等を更新・設定する
 		/// </summary>
 		/// <param name="isInit"></param>
 		public 	void UpdateBlockTxtToListS( bool isInit )
@@ -203,7 +239,7 @@ namespace standScripter
 										break;
 									}
 									
-										if( bankIndex == checkTmp.bankID+1  && checkTmp.isPosContinue )
+									if( bankIndex == checkTmp.bankID+1  && checkTmp.isPosContinue )
 									//	if( bankIndex == checkTmp.bankID+1 && checkTmp != tmpStand && checkTmp.isPosContinue )
 									{
 										isPosContinue = true;
@@ -226,7 +262,6 @@ namespace standScripter
 				}
 
 				dataGridView1.Rows[rowIndex*2].Cells[8].Value = tmp.preProc;
-
 
 				rowIndex++;
 			}
@@ -462,7 +497,8 @@ namespace standScripter
 		private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
 		{
 
-			bool isGuardPosDup = (bool)chBoxGuardPosDup.Checked;
+			//bool isGuardPosDup = (bool)checkBoxComboBox2.Items[2].
+			bool isGuardPosDup = StatusSelections[1].Selected;
 			switch( e.KeyCode)
 			{
 				//二人立ち絵の左右
@@ -513,7 +549,9 @@ namespace standScripter
 			}
 		}
 
-
+		/// <summary>
+		/// 
+		/// </summary>
 		public void RunGame()
 		{
 
@@ -527,6 +565,9 @@ namespace standScripter
 			System.IO.Directory.SetCurrentDirectory(preCurrent);
 		}
 
+		/// <summary>
+		/// 開いているc2ファイルコンパイルする。yu-risはコンパイル=再起動なのでスルー
+		/// </summary>
 		public void CompileNow()
 		{
 			
@@ -546,6 +587,9 @@ namespace standScripter
 			System.IO.Directory.SetCurrentDirectory( preCurrent );
 		}
 
+		/// <summary>
+		/// /
+		/// </summary>
 		public void SwitchStandDel()
 		{
 			int loopCount = dataGridView1.SelectedCells.Count;
@@ -584,6 +628,9 @@ namespace standScripter
 		}
 
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void SwitchStandClear()
 		{
 			int row = dataGridView1.CurrentCell.RowIndex/2;
@@ -734,6 +781,7 @@ namespace standScripter
 			}
 			if( isUpdate ) UpdateBlockTxtToList(false);
 		}
+
 
 		private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
 		{
@@ -956,7 +1004,9 @@ namespace standScripter
 			addTmp.standSize	= sizeType.Replace("_","");
 			addTmp.toolImgName	= thumbName;
 
-			if(chBoxAutoSetPos.Checked == true )
+			bool isCheck = StatusSelections[0].Selected;
+
+			if( isCheck == true )
 			{
 				posType newPos = posType.CENTER;
 				switch(bankNo)
@@ -1114,5 +1164,42 @@ namespace standScripter
 		{
 			e.Effect = DragDropEffects.Move;
 		}
+
+		private void checkBoxComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+
+		}
 	}
+
+	/// <summary>
+	/// Class used for demo purposes. This could be anything listed in a CheckBoxComboBox.
+	/// </summary>
+	public class Status
+    {
+        public Status(int id, string name) { _Id = id; _Name = name; }
+
+        private int _Id;
+        private string _Name;
+
+        public int Id { get { return _Id; } set { _Id = value; } }
+        public string Name { get { return _Name; } set { _Name = value; } }
+
+        /// <summary>
+        /// Now used to return the Name.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() { return Name; }
+    }
+    /// <summary>
+    /// Class used for demo purposes. A list of "Status". 
+    /// This represents the custom "IList" datasource of anything listed in a CheckBoxComboBox.
+    /// </summary>
+    public class StatusList : List<Status>
+    {
+    }
 }
