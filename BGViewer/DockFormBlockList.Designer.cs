@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			PresentationControls.CheckBoxProperties checkBoxProperties1 = new PresentationControls.CheckBoxProperties();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockFormBlockList));
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -51,14 +52,15 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
-			this.chBoxAutoSetPos = new System.Windows.Forms.CheckBox();
-			this.chBoxGuardPosDup = new System.Windows.Forms.CheckBox();
+			this.checkBoxComboBox2 = new PresentationControls.CheckBoxComboBox();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
+			this.groupBox5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dataGridView1
@@ -90,6 +92,7 @@
 			this.dataGridView1.Size = new System.Drawing.Size(1031, 418);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
+			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
 			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
 			this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
 			this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
@@ -167,16 +170,16 @@
 			this.groupBox1.Controls.Add(this.button2);
 			this.groupBox1.Location = new System.Drawing.Point(12, 9);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(81, 49);
+			this.groupBox1.Size = new System.Drawing.Size(68, 49);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "セルサイズ";
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(44, 18);
+			this.button3.Location = new System.Drawing.Point(35, 18);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(32, 25);
+			this.button3.Size = new System.Drawing.Size(28, 25);
 			this.button3.TabIndex = 1;
 			this.button3.Text = "－";
 			this.button3.UseVisualStyleBackColor = true;
@@ -184,9 +187,9 @@
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(6, 18);
+			this.button2.Location = new System.Drawing.Point(4, 18);
 			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(32, 25);
+			this.button2.Size = new System.Drawing.Size(28, 25);
 			this.button2.TabIndex = 0;
 			this.button2.Text = "＋";
 			this.button2.UseVisualStyleBackColor = true;
@@ -195,7 +198,7 @@
 			// button4
 			// 
 			this.button4.Enabled = false;
-			this.button4.Location = new System.Drawing.Point(6, 15);
+			this.button4.Location = new System.Drawing.Point(6, 16);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(130, 24);
 			this.button4.TabIndex = 5;
@@ -207,18 +210,18 @@
 			// 
 			this.groupBox2.Controls.Add(this.button5);
 			this.groupBox2.Controls.Add(this.button6);
-			this.groupBox2.Location = new System.Drawing.Point(99, 9);
+			this.groupBox2.Location = new System.Drawing.Point(86, 9);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(80, 49);
+			this.groupBox2.Size = new System.Drawing.Size(68, 49);
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "フォント";
 			// 
 			// button5
 			// 
-			this.button5.Location = new System.Drawing.Point(41, 18);
+			this.button5.Location = new System.Drawing.Point(34, 18);
 			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(32, 25);
+			this.button5.Size = new System.Drawing.Size(28, 25);
 			this.button5.TabIndex = 1;
 			this.button5.Text = "－";
 			this.button5.UseVisualStyleBackColor = true;
@@ -226,9 +229,9 @@
 			// 
 			// button6
 			// 
-			this.button6.Location = new System.Drawing.Point(6, 18);
+			this.button6.Location = new System.Drawing.Point(3, 18);
 			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(32, 25);
+			this.button6.Size = new System.Drawing.Size(28, 25);
 			this.button6.TabIndex = 0;
 			this.button6.Text = "＋";
 			this.button6.UseVisualStyleBackColor = true;
@@ -237,9 +240,9 @@
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.button4);
-			this.groupBox3.Location = new System.Drawing.Point(511, 13);
+			this.groupBox3.Location = new System.Drawing.Point(899, 9);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(144, 45);
+			this.groupBox3.Size = new System.Drawing.Size(144, 49);
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "編集中のスクリプトの保存";
@@ -248,9 +251,9 @@
 			// 
 			this.groupBox4.Controls.Add(this.button1);
 			this.groupBox4.Controls.Add(this.textBox1);
-			this.groupBox4.Location = new System.Drawing.Point(290, 9);
+			this.groupBox4.Location = new System.Drawing.Point(644, 9);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(215, 49);
+			this.groupBox4.Size = new System.Drawing.Size(249, 49);
 			this.groupBox4.TabIndex = 10;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "検索";
@@ -258,7 +261,7 @@
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(150, 21);
+			this.button1.Location = new System.Drawing.Point(185, 17);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(58, 23);
 			this.button1.TabIndex = 1;
@@ -268,9 +271,9 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(6, 21);
+			this.textBox1.Location = new System.Drawing.Point(6, 19);
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(138, 19);
+			this.textBox1.Size = new System.Drawing.Size(173, 19);
 			this.textBox1.TabIndex = 0;
 			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
 			// 
@@ -279,33 +282,34 @@
 			this.fileSystemWatcher1.EnableRaisingEvents = true;
 			this.fileSystemWatcher1.SynchronizingObject = this;
 			// 
-			// chBoxAutoSetPos
+			// checkBoxComboBox2
 			// 
-			this.chBoxAutoSetPos.AutoSize = true;
-			this.chBoxAutoSetPos.Location = new System.Drawing.Point(669, 15);
-			this.chBoxAutoSetPos.Name = "chBoxAutoSetPos";
-			this.chBoxAutoSetPos.Size = new System.Drawing.Size(196, 16);
-			this.chBoxAutoSetPos.TabIndex = 11;
-			this.chBoxAutoSetPos.Text = "立絵配置時に立位置自動設定する";
-			this.chBoxAutoSetPos.UseVisualStyleBackColor = true;
+			checkBoxProperties1.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.checkBoxComboBox2.CheckBoxProperties = checkBoxProperties1;
+			this.checkBoxComboBox2.DisplayMemberSingleItem = "";
+			this.checkBoxComboBox2.FormattingEnabled = true;
+			this.checkBoxComboBox2.Location = new System.Drawing.Point(6, 18);
+			this.checkBoxComboBox2.Name = "checkBoxComboBox2";
+			this.checkBoxComboBox2.Size = new System.Drawing.Size(205, 20);
+			this.checkBoxComboBox2.TabIndex = 14;
+			this.checkBoxComboBox2.SelectedIndexChanged += new System.EventHandler(this.checkBoxComboBox2_SelectedIndexChanged);
 			// 
-			// chBoxGuardPosDup
+			// groupBox5
 			// 
-			this.chBoxGuardPosDup.AutoSize = true;
-			this.chBoxGuardPosDup.Location = new System.Drawing.Point(669, 37);
-			this.chBoxGuardPosDup.Name = "chBoxGuardPosDup";
-			this.chBoxGuardPosDup.Size = new System.Drawing.Size(168, 16);
-			this.chBoxGuardPosDup.TabIndex = 12;
-			this.chBoxGuardPosDup.Text = "立絵の位置の重複を防止する";
-			this.chBoxGuardPosDup.UseVisualStyleBackColor = true;
+			this.groupBox5.Controls.Add(this.checkBoxComboBox2);
+			this.groupBox5.Location = new System.Drawing.Point(418, 9);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(220, 49);
+			this.groupBox5.TabIndex = 15;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = "便器な機能・設定のON/OFF";
 			// 
 			// DockFormBlockList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1055, 494);
-			this.Controls.Add(this.chBoxGuardPosDup);
-			this.Controls.Add(this.chBoxAutoSetPos);
+			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -323,8 +327,8 @@
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
+			this.groupBox5.ResumeLayout(false);
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -352,7 +356,7 @@
 		private System.Windows.Forms.DataGridViewImageColumn colFace;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.IO.FileSystemWatcher fileSystemWatcher1;
-		private System.Windows.Forms.CheckBox chBoxAutoSetPos;
-		private System.Windows.Forms.CheckBox chBoxGuardPosDup;
+		private PresentationControls.CheckBoxComboBox checkBoxComboBox2;
+		private System.Windows.Forms.GroupBox groupBox5;
 	}
 }

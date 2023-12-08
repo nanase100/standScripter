@@ -248,6 +248,12 @@
   <ItemGroup>
     <Content Include="main.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\参考資料・ライブラリ\コンボボックスにチェックボックス機能を追加\CheckBoxComboBox\CheckBoxComboBox.csproj">
+      <Project>{70A25201-8EA4-48F8-A4A6-ED13ADF8823C}</Project>
+      <Name>CheckBoxComboBox</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
