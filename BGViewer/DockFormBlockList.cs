@@ -18,14 +18,14 @@ namespace standScripter
 	{
 
 
-		public List<textBlockData> m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
-		public List<textBlockData> m_messageBlockGridList	= new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
+		public List<textBlockData>	m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
+		public List<textBlockData>	m_messageBlockGridList	= new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
 
-		public MainForm			m_parent;
-		private soundPlayer		m_soundPlayer		= null;
-		private string			activeScriptName	= "";
+		public MainForm				m_parent;
+		private soundPlayer			m_soundPlayer		= null;
+		private string				activeScriptName	= "";
 
-		private StatusList _StatusList;
+		private StatusList			_StatusList;
 
 		private ListSelectionWrapper<Status> StatusSelections;
 
@@ -34,6 +34,12 @@ namespace standScripter
 		private textStandData	m_copySrcStand		= null;
 		private string			m_copySrcFacename	= "";
 		private string			m_copySrcComment	= "";
+
+		private int				m_dragSrcRow		= -1;
+		private int				m_dragSrcCol		= -1;
+
+		private int				m_dragDestRow		= -1;
+		private int				m_dragDestCol		= -1;
 
 
 		public DockFormBlockList()
@@ -783,13 +789,7 @@ namespace standScripter
 		}
 
 
-		private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			if( e.Button == MouseButtons.Right )
-			{
-				
-			}
-		}
+
 
 		private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
 		{
@@ -1098,6 +1098,10 @@ namespace standScripter
 			if( isClear ) UpdateBlockTxtToList(false);
 		}
 
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public void PasteCell()
 		{
 			if( dataGridView1.CurrentCell == null ) return;
@@ -1147,32 +1151,151 @@ namespace standScripter
 			}
 
 			UpdateBlockTxtToList(false);
-			
+
+
 		}
 
-		private void groupBox4_Enter(object sender, EventArgs e)
+		private void SwapStand( int srcRow, int srcCol, int destRow, int destCol )
 		{
+			
+			
+				int destID = 0;
+				textStandData destBuf = null;
+				foreach( var tmp in m_messageBaseData[destRow].standDatas )
+				{
+					if( tmp.bankID+1 == destCol )
+					{
+						destBuf = tmp;
+						break;
+					}
+					destID++;
+				}
+			
+				int srcID = 0;
+				textStandData srcBuf = null;
+				foreach( var tmp in m_messageBaseData[srcRow].standDatas )
+				{
+					if( tmp.bankID+1 == srcCol )
+					{
+						srcBuf = tmp;
+						break;
+					}
+					srcID++;
+				}
 
+				if( destBuf == null && srcBuf == null ) return;
+
+
+				if( destBuf != null && srcBuf != null )
+				{
+					if( srcRow != destRow )
+					{
+						m_messageBaseData[destRow].standDatas[destCol] = srcBuf;
+						m_messageBaseData[srcRow].standDatas[srcCol]   = destBuf;
+					}
+					int swapBankNo = srcBuf.bankID;
+					srcBuf.bankID = destBuf.bankID;
+					destBuf.bankID = swapBankNo;
+				}
+
+				if( destBuf != null && srcBuf == null )
+				{
+					destBuf.bankID = srcCol-1;
+					m_messageBaseData[destRow].standDatas.Remove(destBuf);
+					m_messageBaseData[srcRow].standDatas.Add(destBuf);
+				}
+
+				if( destBuf == null && srcBuf != null )
+				{
+					srcBuf.bankID = destCol-1;
+					m_messageBaseData[destRow].standDatas.Add( srcBuf );
+					m_messageBaseData[srcRow].standDatas.Remove(srcBuf);
+				}
+
+			
+
+			UpdateBlockTxtToList(false);
+		}
+
+		private void SwapFace( int srcRow, int srcCol, int dstRow, int dstCol )
+		{
+			string buf = m_messageBaseData[m_dragDestRow].faceFileName;
+			m_messageBaseData[m_dragDestRow].faceFileName = m_messageBaseData[m_dragSrcRow].faceFileName;
+			m_messageBaseData[m_dragSrcRow].faceFileName = buf;
+			UpdateBlockTxtToList(false);
+		}
+
+		private void SwapBG( int srcRow, int srcCol, int dstRow, int dstCol )
+		{
+			string buf = m_messageBaseData[m_dragDestRow].bgFileName;
+			m_messageBaseData[m_dragDestRow].bgFileName = m_messageBaseData[m_dragSrcRow].bgFileName;
+			m_messageBaseData[m_dragSrcRow].bgFileName = buf;
+
+			UpdateBlockTxtToList(false);
 		}
 
 		private void dataGridView1_DragDrop(object sender, DragEventArgs e)
 		{
+			Point clientPoint = dataGridView1.PointToClient(new Point(e.X, e.Y));
 
+			var destCell	= dataGridView1.HitTest(clientPoint.X, clientPoint.Y);
+			m_dragDestRow	= destCell.RowIndex/2;
+			m_dragDestCol	= destCell.ColumnIndex;
+
+			if( m_dragDestRow == -1 || m_dragDestCol == -1 ) return;
+
+			if (e.Effect == DragDropEffects.Move)
+			{
+				DataGridViewRow rowToMove = e.Data.GetData(typeof(DataGridViewRow)) as DataGridViewRow;
+
+				if( m_dragSrcCol == 1 && m_dragDestCol == 1 ) SwapBG(m_dragSrcRow,m_dragSrcCol,m_dragDestRow,m_dragDestCol);
+
+				if( m_dragSrcCol == 7 && m_dragDestCol == 7 ) SwapFace(m_dragSrcRow,m_dragSrcCol,m_dragDestRow,m_dragDestCol);
+
+				if( 2 <= m_dragSrcCol && m_dragSrcCol <= 6 )
+					if( 2 <= m_dragDestCol && m_dragDestCol <= 6  ) 
+						SwapStand(m_dragSrcRow,m_dragSrcCol,m_dragDestRow,m_dragDestCol);
+
+
+				dataGridView1.ClearSelection();
+				dataGridView1.Rows[m_dragDestRow].Cells[m_dragDestCol].Selected = true;
+			}
 		}
+
+
+
 
 		private void dataGridView1_DragOver(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.Move;
 		}
 
-		private void checkBoxComboBox2_SelectedIndexChanged(object sender, EventArgs e)
-		{
 
+
+		private void dataGridView1_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
+			{
+				DragDropEffects dropEffect = dataGridView1.DoDragDrop(dataGridView1.Rows[m_dragSrcRow],  DragDropEffects.Move);
+			}
 		}
 
-		private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
 		{
+			if( e.Button == MouseButtons.Right )
+			{
 
+				var clickCell = dataGridView1.HitTest (e.X, e.Y);
+				m_dragSrcRow = clickCell.RowIndex/2;
+				m_dragSrcCol = clickCell.ColumnIndex;
+
+				if( m_dragSrcRow != -1 && m_dragSrcCol != -1 )
+				{
+
+					((DataGridView)sender).ClearSelection();
+					((DataGridView)sender).Rows[m_dragSrcRow*2].Cells[m_dragSrcCol].Selected = true;
+				}
+			}
 		}
 	}
 

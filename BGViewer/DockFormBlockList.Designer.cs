@@ -92,15 +92,14 @@
 			this.dataGridView1.Size = new System.Drawing.Size(1031, 418);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
-			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
 			this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
-			this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
 			this.dataGridView1.CurrentCellChanged += new System.EventHandler(this.dataGridView1_CurrentCellChanged);
 			this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
 			this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
 			this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
 			this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+			this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
+			this.dataGridView1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseMove);
 			// 
 			// message
 			// 
@@ -257,7 +256,6 @@
 			this.groupBox4.TabIndex = 10;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "検索";
-			this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
 			// 
 			// button1
 			// 
@@ -292,7 +290,6 @@
 			this.checkBoxComboBox2.Name = "checkBoxComboBox2";
 			this.checkBoxComboBox2.Size = new System.Drawing.Size(205, 20);
 			this.checkBoxComboBox2.TabIndex = 14;
-			this.checkBoxComboBox2.SelectedIndexChanged += new System.EventHandler(this.checkBoxComboBox2_SelectedIndexChanged);
 			// 
 			// groupBox5
 			// 
