@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			PresentationControls.CheckBoxProperties checkBoxProperties1 = new PresentationControls.CheckBoxProperties();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockFormBlockList));
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,15 +51,17 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
-			this.checkBoxComboBox2 = new PresentationControls.CheckBoxComboBox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.chBoxGuardPosDup = new System.Windows.Forms.CheckBox();
+			this.chBoxAutoPosBank = new System.Windows.Forms.CheckBox();
+			this.button7 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
-			this.groupBox5.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dataGridView1
@@ -92,6 +93,7 @@
 			this.dataGridView1.Size = new System.Drawing.Size(1031, 418);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
+			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
 			this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
 			this.dataGridView1.CurrentCellChanged += new System.EventHandler(this.dataGridView1_CurrentCellChanged);
 			this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
@@ -280,33 +282,53 @@
 			this.fileSystemWatcher1.EnableRaisingEvents = true;
 			this.fileSystemWatcher1.SynchronizingObject = this;
 			// 
-			// checkBoxComboBox2
+			// panel1
 			// 
-			checkBoxProperties1.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.checkBoxComboBox2.CheckBoxProperties = checkBoxProperties1;
-			this.checkBoxComboBox2.DisplayMemberSingleItem = "";
-			this.checkBoxComboBox2.FormattingEnabled = true;
-			this.checkBoxComboBox2.Location = new System.Drawing.Point(6, 18);
-			this.checkBoxComboBox2.Name = "checkBoxComboBox2";
-			this.checkBoxComboBox2.Size = new System.Drawing.Size(205, 20);
-			this.checkBoxComboBox2.TabIndex = 14;
+			this.panel1.Controls.Add(this.chBoxGuardPosDup);
+			this.panel1.Controls.Add(this.chBoxAutoPosBank);
+			this.panel1.Location = new System.Drawing.Point(349, 53);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(289, 172);
+			this.panel1.TabIndex = 16;
+			this.panel1.Visible = false;
 			// 
-			// groupBox5
+			// chBoxGuardPosDup
 			// 
-			this.groupBox5.Controls.Add(this.checkBoxComboBox2);
-			this.groupBox5.Location = new System.Drawing.Point(418, 9);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(220, 49);
-			this.groupBox5.TabIndex = 15;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "便器な機能・設定のON/OFF";
+			this.chBoxGuardPosDup.AutoSize = true;
+			this.chBoxGuardPosDup.Location = new System.Drawing.Point(3, 25);
+			this.chBoxGuardPosDup.Name = "chBoxGuardPosDup";
+			this.chBoxGuardPosDup.Size = new System.Drawing.Size(210, 16);
+			this.chBoxGuardPosDup.TabIndex = 1;
+			this.chBoxGuardPosDup.Text = "立ち位置変更時に位置被りを防止する";
+			this.chBoxGuardPosDup.UseVisualStyleBackColor = true;
+			// 
+			// chBoxAutoPosBank
+			// 
+			this.chBoxAutoPosBank.AutoSize = true;
+			this.chBoxAutoPosBank.Location = new System.Drawing.Point(3, 5);
+			this.chBoxAutoPosBank.Name = "chBoxAutoPosBank";
+			this.chBoxAutoPosBank.Size = new System.Drawing.Size(271, 16);
+			this.chBoxAutoPosBank.TabIndex = 0;
+			this.chBoxAutoPosBank.Text = "立ち絵配置時、バンクに合わせて立位置を自動設定";
+			this.chBoxAutoPosBank.UseVisualStyleBackColor = true;
+			// 
+			// button7
+			// 
+			this.button7.Location = new System.Drawing.Point(436, 13);
+			this.button7.Name = "button7";
+			this.button7.Size = new System.Drawing.Size(201, 33);
+			this.button7.TabIndex = 17;
+			this.button7.Text = "便利な機能のON/OFF一覧";
+			this.button7.UseVisualStyleBackColor = true;
+			this.button7.Click += new System.EventHandler(this.button7_Click);
 			// 
 			// DockFormBlockList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1055, 494);
-			this.Controls.Add(this.groupBox5);
+			this.Controls.Add(this.button7);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -324,7 +346,8 @@
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
-			this.groupBox5.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -353,7 +376,9 @@
 		private System.Windows.Forms.DataGridViewImageColumn colFace;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.IO.FileSystemWatcher fileSystemWatcher1;
-		private PresentationControls.CheckBoxComboBox checkBoxComboBox2;
-		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.CheckBox chBoxGuardPosDup;
+		private System.Windows.Forms.CheckBox chBoxAutoPosBank;
+		private System.Windows.Forms.Button button7;
 	}
 }

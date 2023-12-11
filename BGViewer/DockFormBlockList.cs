@@ -1,6 +1,5 @@
 ﻿using Hnx8.ReadJEnc;
 using Microsoft.Win32;
-using PresentationControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,9 +24,6 @@ namespace standScripter
 		private soundPlayer			m_soundPlayer		= null;
 		private string				activeScriptName	= "";
 
-		private StatusList			_StatusList;
-
-		private ListSelectionWrapper<Status> StatusSelections;
 
 		//コピペ用データ
 		private string			m_copySrcBGname		= "";
@@ -68,9 +64,7 @@ namespace standScripter
 			dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
 
 			InitDataGridView();
-
-			InitOptionChkCombo();
-
+　
 		}
 
 		/// <summary>
@@ -97,27 +91,7 @@ namespace standScripter
 			((DataGridViewImageColumn)dataGridView1.Columns[7]).DefaultCellStyle.NullValue = null;
 		}
 
-		/// <summary>
-		/// チェックボックス付きコンボボックス準備
-		/// </summary>
-		private void InitOptionChkCombo()
-		{
-			_StatusList = new StatusList();
 
-			_StatusList.Add(new Status(1, "立絵配置時に立位置自動設定する"));
-			_StatusList.Add(new Status(2, "立絵の位置の重複を防止する"));
-
-			StatusSelections = new ListSelectionWrapper<Status>(_StatusList, "Name");
-
-			StatusSelections[1].Selected = false;
-
-			checkBoxComboBox2.DataSource = StatusSelections;
-			checkBoxComboBox2.DisplayMemberSingleItem = "Name";
-			checkBoxComboBox2.DisplayMember = "NameConcatenated";
-
-			checkBoxComboBox2.ValueMember = "Selected";
-			checkBoxComboBox2.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-		}
 
 		/// <summary>
 		/// スクリプトブロック情報の立ち絵連続性等を更新・設定する
@@ -503,18 +477,18 @@ namespace standScripter
 		private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
 		{
 
-			//bool isGuardPosDup = (bool)checkBoxComboBox2.Items[2].
-			bool isGuardPosDup = StatusSelections[1].Selected;
+			bool isGuardPosDup = chBoxGuardPosDup.Checked;
+
 			switch( e.KeyCode)
 			{
 				//二人立ち絵の左右
-				case Keys.Q:		ChangeStandPos(posType.H2_LEFT,isGuardPosDup);			break;
-				case Keys.W:		ChangeStandPos(posType.EMPTY,isGuardPosDup);			break;
+				case Keys.Q:		ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
+				case Keys.W:		ChangeStandPos(posType.EMPTY,	isGuardPosDup);			break;
 				case Keys.E:		ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
 				
 				//三人立ち絵の左真ん中右
-				case Keys.A:		ChangeStandPos(posType.H3_LEFT,isGuardPosDup);			break;
-				case Keys.S:		ChangeStandPos(posType.CENTER,isGuardPosDup);			break;
+				case Keys.A:		ChangeStandPos(posType.H3_LEFT,	isGuardPosDup);			break;
+				case Keys.S:		ChangeStandPos(posType.CENTER,	isGuardPosDup);			break;
 				case Keys.D:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
 
 				//ダブルクリック以外での呼び出し
@@ -1004,7 +978,7 @@ namespace standScripter
 			addTmp.standSize	= sizeType.Replace("_","");
 			addTmp.toolImgName	= thumbName;
 
-			bool isCheck = StatusSelections[0].Selected;
+			bool isCheck = chBoxAutoPosBank.Checked;
 
 			if( isCheck == true )
 			{
@@ -1297,6 +1271,14 @@ namespace standScripter
 				}
 			}
 		}
+
+		private void button7_Click(object sender, EventArgs e)
+		{
+			panel1.Visible = !panel1.Visible;
+
+		}
+
+
 	}
 
 	/// <summary>
@@ -1318,11 +1300,5 @@ namespace standScripter
         /// <returns></returns>
         public override string ToString() { return Name; }
     }
-    /// <summary>
-    /// Class used for demo purposes. A list of "Status". 
-    /// This represents the custom "IList" datasource of anything listed in a CheckBoxComboBox.
-    /// </summary>
-    public class StatusList : List<Status>
-    {
-    }
+
 }
