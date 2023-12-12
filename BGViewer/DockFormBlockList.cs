@@ -286,16 +286,16 @@ namespace standScripter
 			CreateGridList();
 
 			// 計測開始
-			sw.Start();
+			//sw.Start();
 
 			UpdateBlockTxtToListS(isInit);
 
 			
 			// 結果表示
-			sw.Stop();			
-			Console.WriteLine("■処理Aにかかった時間");
-			Console.WriteLine($"　{sw.ElapsedMilliseconds}ミリ秒");
-			sw.Reset();
+			//sw.Stop();			
+			//Console.WriteLine("■処理Aにかかった時間");
+			//Console.WriteLine($"　{sw.ElapsedMilliseconds}ミリ秒");
+			//sw.Reset();
 			
 		}
 
