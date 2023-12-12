@@ -16,6 +16,9 @@ namespace standScripter
 	public partial class DockFormBlockList : WeifenLuo.WinFormsUI.Docking.DockContent
 	{
 
+		private System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+	TimeSpan ts;
+
 
 		public List<textBlockData>	m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
 		public List<textBlockData>	m_messageBlockGridList	= new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
@@ -72,8 +75,8 @@ namespace standScripter
 		/// </summary>
 		private void InitDataGridView()
 		{
-			dataGridView1.Columns[0].DefaultCellStyle.BackColor = Color.LightBlue;
-			//dataGridView1.Columns[0].DefaultCellStyle.WrapMode		= DataGridViewTriState.True;
+			dataGridView1.Columns[0].DefaultCellStyle.BackColor	= Color.LightBlue;
+			dataGridView1.Columns[0].DefaultCellStyle.WrapMode	= DataGridViewTriState.True;
 
 			dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
@@ -99,14 +102,11 @@ namespace standScripter
 		/// <param name="isInit"></param>
 		public 	void UpdateBlockTxtToListS( bool isInit )
 		{
-			if( isInit )
-			{
-				dataGridView1.Rows.Clear();
-			}
-
-			for( int i = 0;i < dataGridView1.Rows.Count;i++ )
-				for( int j = 1; j < dataGridView1.Columns.Count-1;j++)
-					dataGridView1.Rows[i].Cells[j].Value = null;
+			if( isInit )		{		dataGridView1.Rows.Clear();		}
+		
+			//for( int i = 0;i < dataGridView1.Rows.Count;i++ )
+			//	for( int j = 1; j < dataGridView1.Columns.Count-1;j++)
+			//		dataGridView1.Rows[i].Cells[j].Value = null;
 			
 			string	buff		= "";
 			string	bgPath		= "";
@@ -114,21 +114,42 @@ namespace standScripter
 			Bitmap	refBitmap	= null;
 			int		rowIndex	= 0;
 
+			List<DataGridViewRow> addRowList = new List<DataGridViewRow>();
+
 			foreach( var tmp in m_messageBlockGridList )
 			{
+				var newRow		= new DataGridViewRow();
+				var marginRow	= new DataGridViewRow();
+
+				newRow.CreateCells(dataGridView1);
+				marginRow.CreateCells(dataGridView1);
+
+
 				if( isInit )
 				{
 					buff = tmp.textBlock;
 
-					if( tmp.voiceFileName !="")	dataGridView1.Rows.Add("🔊 " +Environment.NewLine +Environment.NewLine+ buff);
+					if( tmp.voiceFileName !="")
+					{
+						
+						newRow.Cells[0].Value = "🔊 " +Environment.NewLine +Environment.NewLine+ buff;
+					}
 					else
 					{
-						dataGridView1.Rows.Add(Environment.NewLine+ buff);
+						newRow.Cells[0].Value = Environment.NewLine+ buff;
 					}
+					
+					
+					newRow.Height			= 60;
 
-					int nowRow = dataGridView1.Rows.Add();
-					dataGridView1.Rows[nowRow].Height			= 10;
-					dataGridView1.Rows[nowRow-1].Cells[8].Value	= tmp.preProc;
+					//DataGridViewCellStyle
+				//	newRow.Cells[0].Style = 
+					marginRow.Height			= 10;
+					newRow.Cells[8].Value	= tmp.preProc;
+
+					addRowList.Add(newRow);
+					addRowList.Add(marginRow);
+					
 				}
 
 				if( tmp.bgFileName != "")
@@ -145,8 +166,8 @@ namespace standScripter
 							{
 								if( tmp.isBGContinue == false)	refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).mainImage;
 								else							refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).alphaImage;
-								dataGridView1.Rows[rowIndex*2].Cells[1].Value = refBitmap;
-								dataGridView1.Rows[rowIndex*2].Cells[1].Style.BackColor = (m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.White);
+								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Value = refBitmap;
+								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Style.BackColor = (m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.White);
 								break;
 							}
 						}
@@ -169,22 +190,23 @@ namespace standScripter
 							{
 								refBitmap = m_parent.m_bmpManager.LoadBitmap(facePath).mainImage;
 
-								dataGridView1.Rows[rowIndex*2].Cells[7].Value = refBitmap;
+								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[7].Value = refBitmap;
 							}
 							break;
 						}
 					}
 				}
-
+				
 				//データがないセルの色を白に初期化しておく。立ち絵消し命令のピンクが残り、立ち絵情報がなくなって白に更新されない可能性がある
 
-				for( int i = 0; i < 5; i++ )dataGridView1.Rows[rowIndex*2].Cells[i+2].Style.BackColor = Color.White;
+				for( int i = 0; i < 5; i++ ) (isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[i+2].Style.BackColor = Color.White;
 
+				//立ちグラ
 				foreach( var tmpStand in tmp.standDatas )
 				{
 					int bankIndex = tmpStand.bankID+1;
 
-					if( tmpStand.isDelete ) dataGridView1.Rows[rowIndex*2].Cells[bankIndex].Style.BackColor = Color.Pink;
+					if( tmpStand.isDelete ) (isInit ? newRow : dataGridView1.Rows[rowIndex*2]).Cells[bankIndex].Style.BackColor = Color.Pink;
 
 					if( tmpStand.bankID == -1 || tmpStand.bankID == 999 ) continue;
 
@@ -204,7 +226,7 @@ namespace standScripter
 							if( bankIndex != -1)
 							{
 								int nowPos = (int)tmpStand.standPosType;
-								dataGridView1.Rows[rowIndex*2].Cells[bankIndex].Value = refBitmap;
+								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[bankIndex].Value = refBitmap;
 
 								if( nowPos == -1 )nowPos = 0;
 								
@@ -229,22 +251,26 @@ namespace standScripter
 
 								if( isSame )
 								{
-									dataGridView1.Rows[rowIndex*2+1].Cells[bankIndex].Value = m_parent.m_bmpManager.posImageMiss[nowPos];
+									(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImageMiss[nowPos];
 								}
 								else
 								{
-									if( isPosContinue )	dataGridView1.Rows[rowIndex*2+1].Cells[bankIndex].Value = m_parent.m_bmpManager.posImageCont[nowPos];
-									else				dataGridView1.Rows[rowIndex*2+1].Cells[bankIndex].Value = m_parent.m_bmpManager.posImage[nowPos];
+									if( isPosContinue )	(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImageCont[nowPos];
+									else				(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImage[nowPos];
 								}
 							}
 						}
 					}
 				}
 
-				dataGridView1.Rows[rowIndex*2].Cells[8].Value = tmp.preProc;
+				
+				(isInit ? newRow : dataGridView1.Rows[rowIndex*2]).Cells[8].Value = tmp.preProc;
 
 				rowIndex++;
 			}
+
+
+			if( isInit )  dataGridView1.Rows.AddRange( addRowList.ToArray() );
 		}
 
 
@@ -255,8 +281,22 @@ namespace standScripter
 		/// <param name="isInit"></param>
 		public 	void UpdateBlockTxtToList( bool isInit )
 		{
+			
+
 			CreateGridList();
+
+			// 計測開始
+			sw.Start();
+
 			UpdateBlockTxtToListS(isInit);
+
+			
+			// 結果表示
+			sw.Stop();			
+			Console.WriteLine("■処理Aにかかった時間");
+			Console.WriteLine($"　{sw.ElapsedMilliseconds}ミリ秒");
+			sw.Reset();
+			
 		}
 
 		/// <summary>
@@ -669,6 +709,9 @@ namespace standScripter
 				}
 			}			
 			if( isUpdate ) UpdateBlockTxtToList(false);
+
+			SendPreviewInfo();
+
 		}
 
 
@@ -790,11 +833,17 @@ namespace standScripter
 
 			if( dataGridView1.CurrentCell == null)return;
 
-			int nowRow = dataGridView1.CurrentCell.RowIndex;
+			SendPreviewInfo();
 
-			bool isChangeRow = (m_parent.m_nowSelectBlockNo == nowRow ?false:true);
+			
+		}
 
-			m_parent.m_nowSelectBlockNo = nowRow;
+
+		private void SendPreviewInfo(int rowIndex = -1)
+		{
+			if( rowIndex == -1 ) rowIndex = dataGridView1.CurrentCell.RowIndex;
+
+			m_parent.m_nowSelectBlockNo = rowIndex;
 			m_parent.m_nowSelectBankNo =  dataGridView1.CurrentCell.ColumnIndex-1;
 
 			int rowNo = m_parent.m_nowSelectBlockNo/2;
@@ -802,7 +851,7 @@ namespace standScripter
 			if( m_parent.formParent.m_blockList.m_messageBlockGridList.Count > rowNo )
 			{
 				var tmp = m_parent.formParent.m_blockList.m_messageBlockGridList[rowNo];
-				if(isChangeRow) m_parent.formParent.m_preview.SetPreviewData( tmp.bgFileName, tmp.faceFileName, tmp.standDatas, tmp.textBlock );
+				m_parent.formParent.m_preview.SetPreviewData( tmp.bgFileName, tmp.faceFileName, tmp.standDatas, tmp.textBlock );
 			}
 		}
 
@@ -1258,7 +1307,6 @@ namespace standScripter
 		{
 			if( e.Button == MouseButtons.Right )
 			{
-
 				var clickCell = dataGridView1.HitTest (e.X, e.Y);
 				m_dragSrcRow = clickCell.RowIndex/2;
 				m_dragSrcCol = clickCell.ColumnIndex;
@@ -1275,7 +1323,6 @@ namespace standScripter
 		private void button7_Click(object sender, EventArgs e)
 		{
 			panel1.Visible = !panel1.Visible;
-
 		}
 
 
