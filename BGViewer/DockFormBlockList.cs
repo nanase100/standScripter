@@ -104,9 +104,10 @@ namespace standScripter
 		{
 			if( isInit )		{		dataGridView1.Rows.Clear();		}
 		
-			//for( int i = 0;i < dataGridView1.Rows.Count;i++ )
-			//	for( int j = 1; j < dataGridView1.Columns.Count-1;j++)
-			//		dataGridView1.Rows[i].Cells[j].Value = null;
+			//一旦入力欄を全クリア
+			for( int i = 0;i < dataGridView1.Rows.Count;i++ )
+				for( int j = 1; j < dataGridView1.Columns.Count-1;j++)
+					dataGridView1.Rows[i].Cells[j].Value = null;
 			
 			string	buff		= "";
 			string	bgPath		= "";
