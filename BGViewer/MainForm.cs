@@ -168,21 +168,23 @@ namespace standScripter
 		//-----------------------------------------------------------------------------------
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if(  MessageBox.Show("ツールを終了してもよろしいですか？","確認",MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.No )
-			{
-				e.Cancel = true;
-				m_isCancelCloseFromDock = true;
-				//this.Visible = false;
-				//this.WindowState = FormWindowState.Minimized;
-			}
-
+			
 			if( m_closeFrom == 0 )
 			{
-				m_closeFrom = 1;
-				formParent.Close();
+				this.Hide();
+				e.Cancel = true;
+			}
+			else
+			{
+				if(  MessageBox.Show("ツールを終了してもよろしいですか？","確認",MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.No )
+				{
+					e.Cancel = true;
+					m_isCancelCloseFromDock = true;
+					//this.Visible = false;
+					//this.WindowState = FormWindowState.Minimized;
+				}
 			}
 
-			if( e.Cancel == true ) m_closeFrom = 0 ;
 
 		}
 

@@ -506,7 +506,7 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void FormBlockList_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			//m_parent.Close();
+			if(this.IsHidden) { this.Show(); } else { this.Hide(); }
 			e.Cancel = true;
 		}
 

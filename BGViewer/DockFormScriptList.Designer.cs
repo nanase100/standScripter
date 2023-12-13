@@ -62,6 +62,7 @@
 			this.Controls.Add(this.listView1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DockFormScriptList";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DockFormScriptList_FormClosing);
 			this.Load += new System.EventHandler(this.FormScriptList2_Load);
 			this.ResumeLayout(false);
 

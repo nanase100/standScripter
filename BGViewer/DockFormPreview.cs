@@ -170,5 +170,11 @@ namespace standScripter
 			if( e.Button == MouseButtons.Left ) m_parent.formParent.m_blockList.NextMessage(true);
 			if( e.Button == MouseButtons.Right ) m_parent.formParent.m_blockList.NextMessage(false);
 		}
+
+		private void DockFormPreview_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(this.IsHidden) { this.Show(); } else { this.Hide(); }
+			e.Cancel = true;
+		}
 	}
 }

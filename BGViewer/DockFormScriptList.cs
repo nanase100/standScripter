@@ -79,5 +79,11 @@ namespace standScripter
 			if( e.Button == MouseButtons.Right )		System.Diagnostics.Process.Start(filePath);
 			if( e.Button == MouseButtons.Middle )		System.Diagnostics.Process.Start("EXPLORER.EXE",selectPath );
 		}
+
+		private void DockFormScriptList_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(this.IsHidden) { this.Show(); } else { this.Hide(); }
+			e.Cancel = true;
+		}
 	}
 }

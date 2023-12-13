@@ -170,7 +170,5 @@ namespace standScripter
 				g.Dispose();
 			}
 		}
-
-
 	}
 }
