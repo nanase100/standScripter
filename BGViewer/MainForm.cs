@@ -180,8 +180,7 @@ namespace standScripter
 				{
 					e.Cancel = true;
 					m_isCancelCloseFromDock = true;
-					//this.Visible = false;
-					//this.WindowState = FormWindowState.Minimized;
+					m_closeFrom = 0;
 				}
 			}
 
