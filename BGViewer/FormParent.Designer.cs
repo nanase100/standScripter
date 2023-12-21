@@ -46,7 +46,7 @@
 			this.dockPanel1.Name = "dockPanel1";
 			this.dockPanel1.Size = new System.Drawing.Size(800, 426);
 			this.dockPanel1.TabIndex = 0;
-			
+			this.dockPanel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dockPanel1_DragDrop);
 			// 
 			// menuStrip1
 			// 
@@ -97,12 +97,14 @@
 			this.Controls.Add(this.dockPanel1);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "FormParent";
 			this.Text = "立絵仮打ツール：スクリプト編集";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormParent_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormParent_FormClosed);
 			this.Load += new System.EventHandler(this.FormParent_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormParent_KeyDown);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);

@@ -149,6 +149,12 @@
     <Compile Include="DockFormPreview.Designer.cs">
       <DependentUpon>DockFormPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="helpForm.Designer.cs">
+      <DependentUpon>helpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     <EmbeddedResource Include="DockFormPreview.resx">
       <DependentUpon>DockFormPreview.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="helpForm.resx">
+      <DependentUpon>helpForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -247,6 +256,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="main.ico" />
+    <None Include="Resources\help.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -26,6 +26,9 @@ namespace standScripter
 
 		public void SetPreviewData( string bgName, string faceName, List<textStandData> standList, string message = "" )
 		{
+
+			this.Refresh();
+
 			//Graphics gs = pictureBox1.CreateGraphics();
 
 			Bitmap bmp = new Bitmap(1280,720);
@@ -63,6 +66,12 @@ namespace standScripter
 				gs.DrawImage( tmpBmp,x,0,tmpBmp.Width,tmpBmp.Height);
 			}
 
+			//メッセージウインドウかわり
+			Rectangle mesWnd = new Rectangle(200,520,900,200);
+			Brush fillB = new SolidBrush(Color.FromArgb(192,64,64,64));
+			gs.FillRectangle(fillB,mesWnd);
+
+
 			//顔描画
 			if( faceName!="")
 			{
@@ -78,6 +87,8 @@ namespace standScripter
 				}
 			}
 
+
+
 			//フォントオブジェクトの作成
 			Font fnt = new Font("MS UI Gothic", 22);
 			//文字列を表示
@@ -89,6 +100,8 @@ namespace standScripter
 
 			gs.Dispose();
 			gsMain.Dispose();
+
+			
 
 		}
 
@@ -157,6 +170,8 @@ namespace standScripter
 			pictureBox1.Width  = w;
 			pictureBox1.Height = h;
 
+			
+			m_parent.formParent.m_blockList.SendPreviewInfo();
 		}
 
 		protected override string GetPersistString()

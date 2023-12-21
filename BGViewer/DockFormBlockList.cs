@@ -8,6 +8,8 @@ using System.Drawing;
 using System.IO;
 using System.Media;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace standScripter
@@ -17,7 +19,7 @@ namespace standScripter
 	{
 
 		private System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-	TimeSpan ts;
+		TimeSpan ts;
 
 
 		public List<textBlockData>	m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
@@ -26,6 +28,9 @@ namespace standScripter
 		public MainForm				m_parent;
 		private soundPlayer			m_soundPlayer		= null;
 		private string				activeScriptName	= "";
+
+		private	int				m_cmTmpRow	= -1;
+		private	int				m_cmTmpCol	= -1;
 
 
 		//コピペ用データ
@@ -67,6 +72,10 @@ namespace standScripter
 			dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
 
 			InitDataGridView();
+
+			int vol = m_parent.m_dataManager.m_soundVolume;
+
+			trackBar1.Value = vol;
 　
 		}
 
@@ -77,8 +86,10 @@ namespace standScripter
 		{
 			dataGridView1.Columns[0].DefaultCellStyle.BackColor	= Color.LightBlue;
 			dataGridView1.Columns[0].DefaultCellStyle.WrapMode	= DataGridViewTriState.True;
+			dataGridView1.Columns[8].DefaultCellStyle.WrapMode	= DataGridViewTriState.True;
 
 			dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+			
 
 			var tmp = dataGridView1.Rows.Add();
 
@@ -92,6 +103,7 @@ namespace standScripter
 			((DataGridViewImageColumn)dataGridView1.Columns[5]).DefaultCellStyle.NullValue = null;
 			((DataGridViewImageColumn)dataGridView1.Columns[6]).DefaultCellStyle.NullValue = null;
 			((DataGridViewImageColumn)dataGridView1.Columns[7]).DefaultCellStyle.NullValue = null;
+
 		}
 
 
@@ -133,7 +145,8 @@ namespace standScripter
 					if( tmp.voiceFileName !="")
 					{
 						
-						newRow.Cells[0].Value = "🔊 " +Environment.NewLine +Environment.NewLine+ buff;
+						//newRow.Cells[0].Value = "🔊 " +Environment.NewLine +Environment.NewLine+ buff;
+						newRow.Cells[0].Value = "🔊　" + buff;
 					}
 					else
 					{
@@ -152,6 +165,7 @@ namespace standScripter
 					addRowList.Add(marginRow);
 					
 				}
+				// 計測開始
 
 				if( tmp.bgFileName != "")
 				{
@@ -159,22 +173,17 @@ namespace standScripter
 					{
 						if( tmpThum.m_fileName.IndexOf(tmp.bgFileName) != -1 )
 						{
-							tmpThum.m_fileName.Replace(@"/",@"\");
-
 							bgPath = tmpThum.m_fileName.Replace(@"/",@"\");
 
-							if( System.IO.File.Exists(bgPath))
-							{
-								if( tmp.isBGContinue == false)	refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).mainImage;
-								else							refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).alphaImage;
-								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Value = refBitmap;
-								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Style.BackColor = (m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.White);
-								break;
-							}
+							if( tmp.isBGContinue == false)	refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).mainImage;
+							else							refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).alphaImage;
+							(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Value = refBitmap;
+							break;
+							
 						}
 					}
 				}
-
+			
 				int loopCount = tmp.standDatas.Count;
 				string path = "";
 
@@ -202,6 +211,7 @@ namespace standScripter
 
 				for( int i = 0; i < 5; i++ ) (isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[i+2].Style.BackColor = Color.White;
 
+				
 				//立ちグラ
 				foreach( var tmpStand in tmp.standDatas )
 				{
@@ -220,7 +230,7 @@ namespace standScripter
 						{
 							path = tmpThum.m_fileName.Replace(@"/",@"\");
 							
-							if(  System.IO.File.Exists(path) )
+							//if(  System.IO.File.Exists(path) )
 							{
 								refBitmap = (tmpStand.isContinue == false?m_parent.m_bmpManager.LoadBitmap(path).mainImage:m_parent.m_bmpManager.LoadBitmap(path).alphaImage);
 							}
@@ -263,10 +273,18 @@ namespace standScripter
 						}
 					}
 				}
-
+				
 				
 				(isInit ? newRow : dataGridView1.Rows[rowIndex*2]).Cells[8].Value = tmp.preProc;
-
+				
+				//立ち絵クリア命令・または背景セットがあれば立ち絵クリアで行全体を色付する
+				
+					(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[2].Style.BackColor = ( m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.AliceBlue);
+					(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[3].Style.BackColor = ( m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.AliceBlue);
+					(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[4].Style.BackColor = ( m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.AliceBlue);
+					(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[5].Style.BackColor = ( m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.AliceBlue);
+					(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[6].Style.BackColor = ( m_messageBaseData[rowIndex].isStandClear?Color.Pink:Color.AliceBlue);
+				
 				rowIndex++;
 			}
 
@@ -287,16 +305,16 @@ namespace standScripter
 			CreateGridList();
 
 			// 計測開始
-			//sw.Start();
+			sw.Start();
 
 			UpdateBlockTxtToListS(isInit);
 
 			
 			// 結果表示
-			//sw.Stop();			
-			//Console.WriteLine("■処理Aにかかった時間");
-			//Console.WriteLine($"　{sw.ElapsedMilliseconds}ミリ秒");
-			//sw.Reset();
+			sw.Stop();			
+			Console.WriteLine("■処理Aにかかった時間");
+			Console.WriteLine($"　{sw.ElapsedMilliseconds}ミリ秒");
+			sw.Reset();
 			
 		}
 
@@ -420,6 +438,11 @@ namespace standScripter
 		
 		private void button4_Click(object sender, EventArgs e)
 		{
+			Save();
+		}
+
+		public void Save()
+		{
 			if( System.Windows.Forms.MessageBox.Show("編集中のスクリプトファイルを上書き保存してもよろしいですか？","確認",MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return;
 
 			//string path = activeScriptName +".txt";
@@ -461,6 +484,20 @@ namespace standScripter
 		{
 			StartCellEdit();
 		}
+		
+		private void dataGridView1_MouseClick(object sender, MouseEventArgs e)
+		{
+			int row = dataGridView1.HitTest(e.X, e.Y).RowIndex;
+			int col = dataGridView1.HitTest(e.X, e.Y).ColumnIndex;
+			if( row == -1) return;
+
+			if( e.Button == MouseButtons.Middle )
+			{
+				if( col == 0 ) { PlayVoice(row/2); }
+				if( col == 8 ) { PlayBGM(row/2); }
+
+			}
+		}
 
 		private void StartCellEdit()
 		{
@@ -468,6 +505,7 @@ namespace standScripter
 			int col = dataGridView1.CurrentCell.ColumnIndex;
 
 			if( col == 0 ) { PlayVoice(row/2); }
+			
 
 			if( col >= 1 && col != 8 && row%2==0) { m_parent.m_isCallFromBlocklist = true;  m_parent.hotKey_HotKeyPush( false );	}
 
@@ -480,6 +518,11 @@ namespace standScripter
 		/// <param name="textID"></param>
 		public void PlayVoice(int textID = -1)
 		{
+			if( m_soundPlayer.isPlaying )
+			{
+				m_soundPlayer.StopSound();
+				return;
+			}
 
 			if( textID == -1 ) textID = dataGridView1.CurrentCell.RowIndex/2;
 
@@ -490,8 +533,39 @@ namespace standScripter
 				string folderPrefix = voiceName.Substring(0,2);
 				string path = m_parent.m_dataManager.m_gameDir + "/sound/" + folderPrefix + "/" + voiceName +".ogg";
 
-				if( m_soundPlayer.isPlaying ) m_soundPlayer.StopSound();
-				else 		m_soundPlayer.PlaySound(path);
+				m_soundPlayer.PlaySound(path,trackBar1.Value);
+			}
+			else
+			{
+				m_soundPlayer.StopSound();
+			}
+		}
+
+		public void PlayBGM(int textID = -1)
+		{
+			if( m_soundPlayer.isPlaying )
+			{
+				m_soundPlayer.StopSound();
+				return;
+			}
+
+			if( textID == -1 ) textID = dataGridView1.CurrentCell.RowIndex/2;
+
+			Regex bgmRegex = new Regex(@".*(bgm |bgmplay )(.*?)$.*",RegexOptions.Multiline|RegexOptions.IgnoreCase);
+			
+			var result = bgmRegex.Match( m_messageBlockGridList[textID].preProc );
+
+			if( result.Success == false ) return;
+
+			string bgmName = result.Groups[2].ToString().Replace("\r","");
+			
+			if( bgmName != "" )
+			{
+				string path = m_parent.m_dataManager.m_gameDir + "/sound/bgm/" + bgmName +".ogg";
+
+				if( File.Exists(path) == false ) return;
+
+				m_soundPlayer.PlaySound(path,trackBar1.Value);
 			}
 			else
 			{
@@ -522,20 +596,17 @@ namespace standScripter
 
 			switch( e.KeyCode)
 			{
-				//二人立ち絵の左右
-				case Keys.Q:		ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
+				//立ち絵の左右
 				case Keys.W:		ChangeStandPos(posType.EMPTY,	isGuardPosDup);			break;
-				case Keys.E:		ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
-				
-				//三人立ち絵の左真ん中右
 				case Keys.A:		ChangeStandPos(posType.H3_LEFT,	isGuardPosDup);			break;
-				case Keys.S:		ChangeStandPos(posType.CENTER,	isGuardPosDup);			break;
-				case Keys.D:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
+				case Keys.S:		ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
+				case Keys.D:		ChangeStandPos(posType.CENTER,	isGuardPosDup);			break;
+				case Keys.F:		if(e.Control == true) textBox1.Focus(); else ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
+				case Keys.G:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
 
 				//ダブルクリック以外での呼び出し
 				case Keys.R:		StartCellEdit();							break;
 
-				case Keys.F:	if(e.Control == true) textBox1.Focus();			break;
 
 				//セルコピペ
 				case Keys.X:	if(e.Control == true) CutCell();				break;
@@ -609,7 +680,7 @@ namespace standScripter
 		}
 
 		/// <summary>
-		/// /
+		/// 
 		/// </summary>
 		public void SwitchStandDel()
 		{
@@ -655,6 +726,7 @@ namespace standScripter
 		public void SwitchStandClear()
 		{
 			int row = dataGridView1.CurrentCell.RowIndex/2;
+
 
 			m_messageBaseData[row].isStandClear = !(m_messageBaseData[row].isStandClear);
 
@@ -782,8 +854,16 @@ namespace standScripter
 			{
 				row = dataGridView1.SelectedCells[i].RowIndex/2;
 				col = dataGridView1.SelectedCells[i].ColumnIndex;
-				if( col == 0 || col == 1 ) return;
+				if( col == 0 ) return;
 				col -= 1;
+
+				//背景削除の確認
+				if( m_messageBaseData[row].bgFileName != "" && col == 0 )
+				{
+					m_messageBaseData[row].bgFileName = "";
+					isUpdate = true;
+				}
+
 
 				//立ち絵の削除確認
 				for( int j = 0; j < m_messageBaseData[row].standDatas.Count; j++ )
@@ -840,8 +920,10 @@ namespace standScripter
 		}
 
 
-		private void SendPreviewInfo(int rowIndex = -1)
+		public void SendPreviewInfo(int rowIndex = -1)
 		{
+			if( rowIndex == -1  && dataGridView1.CurrentCell == null) return;
+
 			if( rowIndex == -1 ) rowIndex = dataGridView1.CurrentCell.RowIndex;
 
 			m_parent.m_nowSelectBlockNo = rowIndex;
@@ -1326,7 +1408,83 @@ namespace standScripter
 			panel1.Visible = !panel1.Visible;
 		}
 
+		private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
 
+		}
+
+		private void DockFormBlockList_KeyDown(object sender, KeyEventArgs e)
+		{
+			if( e.KeyCode == Keys.S && e.Modifiers == Keys.Control) Save();
+		}
+
+		private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
+		{
+			
+		}
+
+
+
+		private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			ShowContextMenuDel(e);
+
+		}
+
+		private void ShowContextMenuDel(DataGridViewCellMouseEventArgs e)
+		{
+			m_cmTmpRow = -1;
+			m_cmTmpCol = -1;
+
+			var cell = dataGridView1.HitTest(e.X, e.Y);
+
+			if( cell == null ) return;
+
+			m_cmTmpRow = cell.RowIndex;
+			m_cmTmpCol = cell.ColumnIndex;
+
+			int x = System.Windows.Forms.Cursor.Position.X;
+			//Y座標を取得する
+			int y = System.Windows.Forms.Cursor.Position.Y;
+			if (e.Button == MouseButtons.Right)
+			{
+				contextMenuStrip1.Show(x, y);
+			}
+		}
+
+		private void この立絵指定を削除するToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DeleteItem();
+		}
+
+		private void toolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			SwitchStandDel();
+		}
+
+		private void toolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			SwitchStandClear();
+	
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+
+		}
+
+		private void trackBar1_Scroll(object sender, EventArgs e)
+		{
+			m_soundPlayer.SetVolume( trackBar1.Value );
+			m_parent.m_dataManager.m_soundVolume = trackBar1.Value;
+		}
+
+		private void button8_Click(object sender, EventArgs e)
+		{
+			helpForm helpForm = new helpForm(System.Windows.Forms.Cursor.Position.X,System.Windows.Forms.Cursor.Position.Y);
+			helpForm.ShowDialog();
+			helpForm.Dispose();
+		}
 	}
 
 	/// <summary>

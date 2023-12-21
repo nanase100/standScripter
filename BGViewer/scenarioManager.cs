@@ -126,7 +126,7 @@ namespace standScripter
 			foreach( var tmp in rc.standDatas ) standDatas.Add( new textStandData(tmp));
 		}
 	}
-
+		
 
 	/// <summary>
 	/// 

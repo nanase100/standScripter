@@ -14,7 +14,7 @@ namespace standScripter
 {
 	public partial class FormParent : Form
 	{
-		private MainForm				m_parent		= null;
+		public MainForm				m_parent		= null;
 		public DockFormScriptList		m_scriptList	= null;
 		public DockFormPreview			m_preview		= null;
 		public DockFormBlockList		m_blockList		= null;
@@ -34,28 +34,27 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void FormParent_Load(object sender, EventArgs e)
 		{
-			m_scriptList = new DockFormScriptList();
-			m_scriptList.m_parent = m_parent;
-			m_scriptList.Text = "スクリプト一覧";
-			//m_scriptList.Show(dockPanel1);xv
+			m_scriptList			= new DockFormScriptList();
+			m_scriptList.m_parent	= m_parent;
+			m_scriptList.Text		= "スクリプト一覧";
+			//m_scriptList.Show(dockPanel1);
 
-			m_preview = new DockFormPreview();
-			m_preview.m_parent = m_parent;
-			m_preview.Text = "プレビュー";
+			m_preview			= new DockFormPreview();
+			m_preview.m_parent	= m_parent;
+			m_preview.Text		= "プレビュー";
 			//m_preview.Show(dockPanel1);
 
-			m_blockList = new DockFormBlockList();
-			m_blockList.m_parent = m_parent;
-			m_blockList.Text = "スクリプト内容";
+			m_blockList				= new DockFormBlockList();
+			m_blockList.m_parent	= m_parent;
+			m_blockList.Text		= "スクリプト内容";
 			//m_blockList.Show(dockPanel1);
 
 			LayoutLoad(); // レイアウト読み込み
 
-			this.Left = m_parent.m_dataManager.dockingBasePos.Left;
-			this.Top = m_parent.m_dataManager.dockingBasePos.Top;
-			this.Width = m_parent.m_dataManager.dockingBasePos.Width;
-			this.Height = m_parent.m_dataManager.dockingBasePos.Height;
-			
+			this.Left	= m_parent.m_dataManager.dockingBasePos.Left;
+			this.Top	= m_parent.m_dataManager.dockingBasePos.Top;
+			this.Width	= m_parent.m_dataManager.dockingBasePos.Width;
+			this.Height	= m_parent.m_dataManager.dockingBasePos.Height;
 		}
 
 		/// <summary>
@@ -79,7 +78,7 @@ namespace standScripter
 
 		private void FormParent_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			StockPos();
+			//StockPos();
 		}
 
 		private void FormParent_FormClosing(object sender, FormClosingEventArgs e)
@@ -120,16 +119,23 @@ namespace standScripter
 			{
 				DeserializeDockContent deserializeDockContent 	= new DeserializeDockContent(GetDockContent);
 				dockPanel1.LoadFromXml(LayoutFilePath, deserializeDockContent);
+
+				m_parent.Show(dockPanel1);
 				m_scriptList.Show(dockPanel1);
 				m_preview.Show(dockPanel1);
 				m_blockList.Show(dockPanel1);
+
+				
 			}
 			catch(Exception ee)
 			{
 				// 初回起動など保存ファイルがない場合などならレイアウト無視で全部表示開始
+				m_parent.Show(dockPanel1);
 				m_scriptList.Show(dockPanel1);
 				m_preview.Show(dockPanel1);
 				m_blockList.Show(dockPanel1);
+
+				
 			}
 		}
  
@@ -148,6 +154,7 @@ namespace standScripter
 				case "DockFormBlockListStr":	return m_blockList;		break;
 				case "DockFormScriptListStr":	return m_scriptList;	break;
 				case "DockFormPreviewStr":		return m_preview;		break;
+				case "MainForm":				return m_parent;		break;
 			}
 
 			return null;
@@ -162,14 +169,12 @@ namespace standScripter
 			m_blockList?.Dispose();
 			m_scriptList?.Dispose();
 			m_preview?.Dispose();
+
+			m_parent?.Dispose();
 		}
  
 		private void windowToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			// メニューが開かれる直前：見えなくなっているフォームのメニューだけ有効化する
-			//プレビューの表示非表示ToolStripMenuItem.Text	= m_preview.IsHidden ? "Form2 を表示" : "Form2 を消す";
-			//スクリプトの表示非表示ToolStripMenuItem.Text	= form3.IsHidden ? "Form3 を表示" : "Form3 を消す";
-			//ファイル一覧の表示非表示ToolStripMenuItem.Text	= form4.IsHidden ? "Form4 を表示" : "Form4 を消す";
 		}
  
 
@@ -189,5 +194,15 @@ namespace standScripter
 			if(m_scriptList.IsHidden) { m_scriptList.Show(); } else { m_scriptList.Hide(); } // Form2 の再表、非表示切り替え
 		}
 
+
+		private void FormParent_KeyDown(object sender, KeyEventArgs e)
+		{
+			if( e.KeyCode == Keys.S && e.Modifiers == Keys.Control) m_blockList.Save();
+		}
+
+		private void dockPanel1_DragDrop(object sender, DragEventArgs e)
+		{	
+
+		}
 	}
 }

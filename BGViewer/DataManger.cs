@@ -173,7 +173,8 @@ namespace standScripter
 		public int m_subThumbnailWidth { set; get; }
 		public int m_subThumbnailHeight { set; get; }
 
-		public int m_summaryFontSize { set; get; }
+		public int m_summaryFontSize{ set; get; }
+		public int m_soundVolume	{ set; get; }
 
 		public string m_copyString1 { set; get; }
 		public string m_copyString2 { set; get; }
@@ -232,6 +233,7 @@ namespace standScripter
 			m_subThumbnailHeight	= 150;
 			m_subThumbnailHeight	= 150;
 			m_summaryFontSize		= 10;
+			m_soundVolume			= 128;
 			m_copyString1			= "";
 			m_copyString2			= "";
 			m_copyString3			= "";
@@ -312,6 +314,8 @@ namespace standScripter
 				m_subThumbnailHeight	= jsonData.サブサムネイルサイズ[1];
 
 				m_summaryFontSize		= jsonData.フォントサイズ;
+
+				m_soundVolume			= jsonData.音量;
 
 				//大型サムネイルサイズ取得
 				m_bigThumbnailWidth		= jsonData.大型サムネイルサイズ[0];
@@ -442,6 +446,7 @@ namespace standScripter
 			jsonData.サブサムネイルサイズ[1] = m_subThumbnailHeight;
 
 			jsonData.フォントサイズ = m_summaryFontSize;
+			jsonData.音量			= m_soundVolume;
 
 			//大型サムネイルサイズ取得
 			jsonData.大型サムネイルサイズ[0] = m_bigThumbnailWidth;
@@ -903,6 +908,7 @@ namespace standScripter
 		public List<int>	サブサムネイルサイズ	{ get; set; } = new List<int>();
 		public List<int>	大型サムネイルサイズ	{ get; set; } = new List<int>();
 		public int			フォントサイズ			{ get; set; }
+		public int			音量					{ get; set; }
 		public List<int>	ウインドウ座標			{ get; set; } = new List<int>();
 
 		public int			画面分割幅				{ get; set; }
@@ -943,6 +949,7 @@ namespace standScripter
 			}
 
 			フォントサイズ = 8;
+			音量 = 128;
 
 			if (大型サムネイルサイズ.Count == 0)
 			{

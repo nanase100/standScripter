@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockFormBlockList));
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,9 +53,16 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label1 = new System.Windows.Forms.Label();
 			this.chBoxGuardPosDup = new System.Windows.Forms.CheckBox();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			this.chBoxAutoPosBank = new System.Windows.Forms.CheckBox();
 			this.button7 = new System.Windows.Forms.Button();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.この立絵指定を削除するToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.button8 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -62,6 +70,8 @@
 			this.groupBox4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
 			this.panel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dataGridView1
@@ -69,7 +79,6 @@
 			this.dataGridView1.AllowDrop = true;
 			this.dataGridView1.AllowUserToAddRows = false;
 			this.dataGridView1.AllowUserToDeleteRows = false;
-			this.dataGridView1.AllowUserToResizeRows = false;
 			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -93,15 +102,19 @@
 			this.dataGridView1.Size = new System.Drawing.Size(1031, 418);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
+			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
 			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
 			this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
+			this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
 			this.dataGridView1.CurrentCellChanged += new System.EventHandler(this.dataGridView1_CurrentCellChanged);
 			this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
 			this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
 			this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
 			this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+			this.dataGridView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseClick);
 			this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
 			this.dataGridView1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseMove);
+			this.dataGridView1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseUp);
 			// 
 			// message
 			// 
@@ -198,13 +211,14 @@
 			// 
 			// button4
 			// 
+			this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.button4.Enabled = false;
 			this.button4.Location = new System.Drawing.Point(6, 16);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(130, 24);
 			this.button4.TabIndex = 5;
 			this.button4.Text = "保存";
-			this.button4.UseVisualStyleBackColor = true;
+			this.button4.UseVisualStyleBackColor = false;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
 			// groupBox2
@@ -241,7 +255,7 @@
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.button4);
-			this.groupBox3.Location = new System.Drawing.Point(899, 9);
+			this.groupBox3.Location = new System.Drawing.Point(623, 9);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(144, 49);
 			this.groupBox3.TabIndex = 9;
@@ -252,7 +266,7 @@
 			// 
 			this.groupBox4.Controls.Add(this.button1);
 			this.groupBox4.Controls.Add(this.textBox1);
-			this.groupBox4.Location = new System.Drawing.Point(644, 9);
+			this.groupBox4.Location = new System.Drawing.Point(368, 9);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(249, 49);
 			this.groupBox4.TabIndex = 10;
@@ -285,13 +299,25 @@
 			// panel1
 			// 
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel1.Controls.Add(this.button8);
+			this.panel1.Controls.Add(this.label1);
 			this.panel1.Controls.Add(this.chBoxGuardPosDup);
+			this.panel1.Controls.Add(this.trackBar1);
 			this.panel1.Controls.Add(this.chBoxAutoPosBank);
-			this.panel1.Location = new System.Drawing.Point(349, 53);
+			this.panel1.Location = new System.Drawing.Point(72, 105);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(289, 172);
 			this.panel1.TabIndex = 16;
 			this.panel1.Visible = false;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(14, 107);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(114, 12);
+			this.label1.TabIndex = 19;
+			this.label1.Text = "SE. BGM 再生時音量";
 			// 
 			// chBoxGuardPosDup
 			// 
@@ -302,6 +328,15 @@
 			this.chBoxGuardPosDup.TabIndex = 1;
 			this.chBoxGuardPosDup.Text = "立ち位置変更時に位置被りを防止する";
 			this.chBoxGuardPosDup.UseVisualStyleBackColor = true;
+			// 
+			// trackBar1
+			// 
+			this.trackBar1.Location = new System.Drawing.Point(13, 122);
+			this.trackBar1.Maximum = 255;
+			this.trackBar1.Name = "trackBar1";
+			this.trackBar1.Size = new System.Drawing.Size(261, 45);
+			this.trackBar1.TabIndex = 18;
+			this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
 			// 
 			// chBoxAutoPosBank
 			// 
@@ -315,13 +350,56 @@
 			// 
 			// button7
 			// 
-			this.button7.Location = new System.Drawing.Point(436, 13);
+			this.button7.Location = new System.Drawing.Point(160, 19);
 			this.button7.Name = "button7";
 			this.button7.Size = new System.Drawing.Size(201, 33);
 			this.button7.TabIndex = 17;
-			this.button7.Text = "便利な機能のON/OFF一覧";
+			this.button7.Text = "便利な機能の一覧";
 			this.button7.UseVisualStyleBackColor = true;
 			this.button7.Click += new System.EventHandler(this.button7_Click);
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.この立絵指定を削除するToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.ShowCheckMargin = true;
+			this.contextMenuStrip1.ShowImageMargin = false;
+			this.contextMenuStrip1.Size = new System.Drawing.Size(240, 70);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+			// 
+			// この立絵指定を削除するToolStripMenuItem
+			// 
+			this.この立絵指定を削除するToolStripMenuItem.Name = "この立絵指定を削除するToolStripMenuItem";
+			this.この立絵指定を削除するToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+			this.この立絵指定を削除するToolStripMenuItem.Text = "この立絵指定を削除する";
+			this.この立絵指定を削除するToolStripMenuItem.Click += new System.EventHandler(this.この立絵指定を削除するToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(239, 22);
+			this.toolStripMenuItem1.Text = "ここに立絵削除命令を入れる/外す";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(239, 22);
+			this.toolStripMenuItem2.Text = "立絵全体削除命令を入れる/外す";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+			// 
+			// button8
+			// 
+			this.button8.Location = new System.Drawing.Point(211, 71);
+			this.button8.Name = "button8";
+			this.button8.Size = new System.Drawing.Size(63, 32);
+			this.button8.TabIndex = 20;
+			this.button8.Text = "ヘルプ";
+			this.button8.UseVisualStyleBackColor = true;
+			this.button8.Click += new System.EventHandler(this.button8_Click);
 			// 
 			// DockFormBlockList
 			// 
@@ -336,10 +414,12 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.dataGridView1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.Name = "DockFormBlockList";
 			this.Text = "スクリプトブロック一覧";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormBlockList_FormClosing);
 			this.Load += new System.EventHandler(this.FormBlockList_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DockFormBlockList_KeyDown);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -349,6 +429,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -381,5 +463,12 @@
 		private System.Windows.Forms.CheckBox chBoxGuardPosDup;
 		private System.Windows.Forms.CheckBox chBoxAutoPosBank;
 		private System.Windows.Forms.Button button7;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem この立絵指定を削除するToolStripMenuItem;
+		private System.Windows.Forms.TrackBar trackBar1;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button button8;
 	}
 }

@@ -14,10 +14,12 @@ using HongliangSoft.Utilities.Gui;
 
 using System.Runtime.InteropServices;
 using Hnx8.ReadJEnc;
+using System.Web.UI.HtmlControls;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace standScripter
 {
-	public partial class MainForm : Form
+	public partial class MainForm : WeifenLuo.WinFormsUI.Docking.DockContent
 	{
 
 		[DllImport("user32.dll", SetLastError = true)]
@@ -153,6 +155,7 @@ namespace standScripter
 			InitializeComponent();
 			this.pictureBox1.MouseWheel		+= new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
 			this.tabControl1.MouseWheel		+= new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseWheel);
+
 		}
 
 		//-----------------------------------------------------------------------------------
@@ -239,7 +242,6 @@ namespace standScripter
 
 			m_dataManager.dockingBasePos		= new Rectangle(formParent.Left,formParent.Top,formParent.Width,formParent.Height);
 
-
 		//	m_dataManager.scriptListPos			= new Rectangle( formScriptList.Left, formScriptList.Top, formScriptList.Width, formScriptList.Height );
 
 			m_dataManager.m_toolOption[0]		= (menuItemSub1.Checked == true ? 1 : 0 );
@@ -250,8 +252,6 @@ namespace standScripter
 			m_dataManager.m_toolOption[5]		= (menuItemSub6.Checked == true ? 1 : 0);
 			m_dataManager.m_toolOption[6]		= (menuItemSub7.Checked == true ? 1 : 0);
 			m_dataManager.m_toolOption[7]		= (ToolStripMenuItem8.Checked == true ? 1 : 0);
-
-			m_dataManager.m_toolOption[8]		= (ToolStripMenuItemホット数字キー.Checked == true ? 1 : 0);
 			
 
 			m_dataManager.m_showTabLv			= int.Parse(toolStripMenuItem2.Text);
@@ -290,6 +290,8 @@ namespace standScripter
 				m_dataManager.SettingLoad("_option.txt", true);
 			}
 
+			
+
 			//-----------------------------------
 			//タブの色変えのためオーナードロー設定
 			//タブのサイズを固定する
@@ -321,10 +323,10 @@ namespace standScripter
 			
 			textBox3.Text						= m_copyString1;
 
-			this.Left							= m_dataManager.m_left;
-			this.Top							= m_dataManager.m_top ;
-			this.Width							= m_dataManager.m_width ;
-			this.Height							= m_dataManager.m_height ;
+//			this.Left							= m_dataManager.m_left;
+//			this.Top							= m_dataManager.m_top ;
+//			this.Width							= m_dataManager.m_width ;
+//			this.Height							= m_dataManager.m_height ;
 			splitContainer1.SplitterDistance	= m_dataManager.m_splitSize;
 
 			
@@ -350,7 +352,6 @@ namespace standScripter
 
 			this.TopMost =			(m_dataManager.m_toolOption[4] == 1 ? true : false );
 
-			ToolStripMenuItemホット数字キー.Checked = (m_dataManager.m_toolOption[8] == 1 ? true : false );
 
 
 			toolStripMenuItem2.Text	= m_dataManager.m_showTabLv.ToString();
@@ -384,20 +385,6 @@ namespace standScripter
 				toolStripMenuItem3.Text = m_dataManager.m_showTabStrCount.ToString();
 			}
 
-			if( m_dataManager.m_toolOption[8] == 1 )
-			{
-				m_hotKey[0] = new HotKey( MOD_KEY.CONTROL,Keys.D1, HotkeyOpenPanel_01 );
-				m_hotKey[1] = new HotKey( MOD_KEY.CONTROL,Keys.D2, HotkeyOpenPanel_02 );
-				m_hotKey[2] = new HotKey( MOD_KEY.CONTROL,Keys.D3, HotkeyOpenPanel_03 );
-				m_hotKey[3] = new HotKey( MOD_KEY.CONTROL,Keys.D4, HotkeyOpenPanel_04 );
-				m_hotKey[4] = new HotKey( MOD_KEY.CONTROL,Keys.D5, HotkeyOpenPanel_05 );
-				m_hotKey[5] = new HotKey( MOD_KEY.CONTROL,Keys.D6, HotkeyOpenPanel_06 );
-				m_hotKey[6] = new HotKey( MOD_KEY.CONTROL,Keys.D7, HotkeyOpenPanel_07 );
-				m_hotKey[7] = new HotKey( MOD_KEY.CONTROL,Keys.D8, HotkeyOpenPanel_08 );
-				m_hotKey[8] = new HotKey( MOD_KEY.CONTROL,Keys.D9, HotkeyOpenPanel_09 );
-				//		hotKey.Dispose();
-				//	hotKey = new HotKey(0,Keys.F11, openScript );
-			}
 			
 			LoadTabChild();
 			UpdateTabNameAll();
@@ -427,70 +414,10 @@ namespace standScripter
 			formParent = new FormParent(this);
 			formParent.Show();
 
+			//m_hotKey[0] = new HotKey(MOD_KEY.CONTROL, Keys.S, formParent.m_blockList.Save );
+
 		}
 
-
-		public void HotkeyOpenPanel_01()
-		{
-			SendHotkeyOpenPanel(0);
-		}
-
-		public void HotkeyOpenPanel_02()
-		{
-			SendHotkeyOpenPanel(1);
-		}
-
-		public void HotkeyOpenPanel_03()
-		{
-			SendHotkeyOpenPanel(2);
-		}
-
-		public void HotkeyOpenPanel_04()
-		{
-			SendHotkeyOpenPanel(3);
-		}
-
-		public void HotkeyOpenPanel_05()
-		{
-			SendHotkeyOpenPanel(4);
-		}
-
-		public void HotkeyOpenPanel_06()
-		{
-			SendHotkeyOpenPanel(5);
-		}
-
-		public void HotkeyOpenPanel_07()
-		{
-			SendHotkeyOpenPanel(6);
-		}
-
-		public void HotkeyOpenPanel_08()
-		{
-			SendHotkeyOpenPanel(7);
-		}
-
-		public void HotkeyOpenPanel_09()
-		{
-			SendHotkeyOpenPanel(8);
-		}
-
-		public void SendHotkeyOpenPanel( int panelNO )
-		{
-			string			totalParentName = "";
-			TreeNode		tmpNode			= treeView1.SelectedNode.Parent;
-
-			//階層を上に登りつつ名前を結合して最終的な名前にしていく
-			while (tmpNode != null)
-			{
-				totalParentName	= totalParentName.Insert(0, tmpNode.Text);
-				tmpNode			= tmpNode.Parent;
-			}
-			string nowGenre = totalParentName + treeView1.SelectedNode.Text;
-			if( m_dataManager.m_genreTreeByGenreName[nowGenre].m_useBigThumbnail > 0 ) panelNO++;
-
-			ShowGraphic(panelNO,1,true);
-		}
 
 
 
@@ -503,6 +430,8 @@ namespace standScripter
 			DoPaint();
 			UpdateCount();
 			pictureBox1.Invalidate();
+
+			
 		}
 
 
@@ -1198,7 +1127,7 @@ namespace standScripter
 
 				formParent.m_blockList.UpdateBlockTxtToList(false);
 
-				if( m_isCallFromBlocklist )	SendToBack();
+				if( m_isCallFromBlocklist && this.IsFloat )	this.Hide();//SendToBack();
 			} 
 			else
 			{
@@ -1599,7 +1528,9 @@ namespace standScripter
 				KeyShortCutProc( e.KeyCode );
 			}
 
-			if( e.KeyCode == Keys.Escape && m_isCallFromBlocklist ) SendToBack();
+			if( e.KeyCode == Keys.Escape && m_isCallFromBlocklist ) this.Hide();//SendToBack();
+
+			if( e.KeyCode == Keys.R && this.IsFloat == true ) this.Hide();
 		}
 
 		/// <summary>
@@ -1729,6 +1660,8 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void Form1_Resize(object sender, EventArgs e)
 		{
+			if( (pictureBox1.Width == 0 || pictureBox1.Height == 0)) return;
+
 			ReCreateSurface();
 			DoPaint();
 			UpdateCount();
@@ -2418,7 +2351,8 @@ namespace standScripter
 		public void hotKey_HotKeyPush( bool isTopMost = true ) {
 			
 			//if( m_dataManager.m_globalHookUse == 1 ){
-			this.Visible = true;
+				this.Show();
+				this.Visible = true;
 				this.BringToFront();
 				this.WindowState = FormWindowState.Normal;
 				this.TopMost = isTopMost;
@@ -2433,24 +2367,23 @@ namespace standScripter
 			//ホールド式
 			//if( m_dataManager.m_globalHookUse == 1 ){
 				
-				if( m_isGlobalPush == 1 ){
+				if( m_isGlobalPush == 0 && (GetAsyncKeyState(Keys.IMENonconvert) & 0x8000) != 0){
 					hotKey_HotKeyPush();
 					m_isGlobalPush  = 2;
 				}
 
 				if( m_isGlobalPush == 2 && ((GetAsyncKeyState(Keys.IMENonconvert) & 0x8000) == 0) ){
 					if( menuItemSub5.Checked == false ) this.TopMost = false;
-					this.SendToBack();
+					this.Hide();//this.SendToBack();
 					m_isGlobalPush = 0;
 				}
 			//}
 		}
 
-		static public void Check_HoldHotkey(object sender, KeyboardHookedEventArgs e){
+		static public void Check_HoldHotkey(object sender, KeyboardHookedEventArgs e)
+		{
 			
-			if( e.KeyCode == Keys.IMENonconvert ){
-				m_isGlobalPush = 1;
-			}
+
 
 		}
 
@@ -2714,6 +2647,15 @@ namespace standScripter
 
 		}
 
+
+		private void MainForm_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if( e.KeyChar == 'R' || this.IsFloat )
+			{
+				this.Hide();
+			}
+		}
+
 		private void tabControl1_MouseMove(object sender, MouseEventArgs e)
 		{
 			if( m_isPreTabDragDrop == true ) m_isTabDragDrop = true;
@@ -2853,6 +2795,11 @@ namespace standScripter
 			e.Graphics.DrawString(txt, e.Font, foreBrush, e.Bounds, sf);
 		}
 
+		protected override string GetPersistString()
+		{
+			return "MainForm";
+		}
+
 	}
 
 
@@ -2971,9 +2918,9 @@ namespace standScripter
 				}
 			}
 
-			
-
 		}
+
+
 
 	}
 
