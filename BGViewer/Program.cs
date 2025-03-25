@@ -23,7 +23,11 @@ namespace standScripter
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			var mainForm = new MainForm();
+			//var mainForm = new DockStandList();
+			//Application.Run(mainForm);
+			//mainForm.Show();
+
+			var mainForm = new FormParent();
 			//Application.Run(mainForm);
 			mainForm.Show();
 
@@ -34,7 +38,7 @@ namespace standScripter
 				if (targetTimes <= tickCount)
 				{
 					// メインの処理
-					mainForm.DoLoop();
+					mainForm.m_standList.DoLoop();
  
 					targetTimes = (targetTimes + 30) & int.MaxValue;
 				}

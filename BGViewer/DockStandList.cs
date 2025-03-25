@@ -16,12 +16,12 @@ using System.Runtime.InteropServices;
 using Hnx8.ReadJEnc;
 using System.Web.UI.HtmlControls;
 using WeifenLuo.WinFormsUI.Docking;
+using System.Windows.Shapes;
 
 namespace standScripter
 {
-	public partial class MainForm : WeifenLuo.WinFormsUI.Docking.DockContent
+	public partial class DockStandList : WeifenLuo.WinFormsUI.Docking.DockContent
 	{
-
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, IntPtr ptr);
 
@@ -67,10 +67,7 @@ namespace standScripter
 
 		public ImageManager		m_imgManager		= new ImageManager();
 		public BitmapManager	m_bmpManager		= new BitmapManager();
-		public DataManger		m_dataManager		= new DataManger();
-
-		public scenarioManager m_scenarioManager = new scenarioManager();
-
+		
 		public Bitmap			m_bitmapSurface;
 		public int				drawAllHeight		= 0;
 		public int				m_thumbnailWidth	= 160;//80;
@@ -87,8 +84,8 @@ namespace standScripter
 		public string			m_copyString7		= "";
 		public string			m_copyString8		= "";
 		public string			m_copyString9		= "";
-		public int				m_bigPicCount		= 0;				//アクティブなジャンルセットに大型立ち絵データを含む枚数。
-		public int				m_bigPicPosY		= 0;				//アクティブなジャンルセットに大型立ち絵データを含む枚数。
+		public int				m_bigPicCount		= 0;					//アクティブなジャンルセットに大型立ち絵データを含む枚数。
+		public int				m_bigPicPosY		= 0;					//アクティブなジャンルセットに大型立ち絵データを含む枚数。
 		public List<DataSet>	m_activeDataSet		= new List<DataSet>();
 
 		public bool				m_isUseSubThumSize	= false;
@@ -105,10 +102,8 @@ namespace standScripter
 		//ブロックリストからの呼び出し元
 		public bool				m_isCallFromBlocklist	= false;
 
-
-
-		public int				m_nowSelectBlockNo	= 0;
-		public int				m_nowSelectBankNo	= 0;
+		private int				retCX	= -1;
+		private int				retCY	= -1;
 
 		public Brush[]			m_colorPalette		= { Brushes.White, Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.Tan, Brushes.Bisque, Brushes.Magenta, Brushes.BlueViolet, Brushes.PaleGreen, Brushes.OliveDrab, Brushes.RosyBrown, Brushes.Aquamarine, Brushes.Cornsilk, Brushes.MintCream, Brushes.DarkKhaki, Brushes.DarkGray, Brushes.DeepPink, Brushes.DarkOrchid, Brushes.Chocolate, Brushes.LawnGreen };
 
@@ -137,12 +132,14 @@ namespace standScripter
 		bool		m_receiveTabChangeFlg	= false;
 
 
-		public int			m_closeFrom				= 0;
+		public int		m_closeFrom				= 0;
 		public bool		m_isCancelCloseFromDock	= false;
 
 		//-----------------------------------------------------------------------------------
 
-		public FormParent		formParent;
+		public FormParent		m_parent;
+
+		
 
 		//-----------------------------------------------------------------------------------
 
@@ -150,7 +147,7 @@ namespace standScripter
 		//-----------------------------------------------------------------------------------
 		//フォームのコンストラクタ
 		//-----------------------------------------------------------------------------------
-		public MainForm()
+		public DockStandList()
 		{
 			InitializeComponent();
 			this.pictureBox1.MouseWheel		+= new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
@@ -161,7 +158,7 @@ namespace standScripter
 		//-----------------------------------------------------------------------------------
 		//フォームのデストラクタ
 		//-----------------------------------------------------------------------------------
-		~MainForm()
+		~DockStandList()
 		{
 			m_bitmapSurface.Dispose();
 		}
@@ -179,12 +176,7 @@ namespace standScripter
 			}
 			else
 			{
-				if(  MessageBox.Show("ツールを終了してもよろしいですか？","確認",MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.No )
-				{
-					e.Cancel = true;
-					m_isCancelCloseFromDock = true;
-					m_closeFrom = 0;
-				}
+
 			}
 
 
@@ -203,62 +195,63 @@ namespace standScripter
 				}
 			}
 
-			m_dataManager.m_tabBackupDat.Clear();
+			m_parent.m_dataManager.m_tabBackupDat.Clear();
 
 			int i = 0;
 			foreach( var tmp in m_tabList )
 			{
 				if(tmp == null )continue;
-				m_dataManager.m_tabBackupDat.Add( new TabBackupDat(tmp.FullPath, m_tabInfo[i].m_tabOpValue, m_tabInfo[i].m_tabOpValue2, m_tabInfo[i].m_tabOpValue3, m_tabInfo[i].m_tabOpValue4, m_tabInfo[i].m_tabOpCopyID, m_tabInfo[i].m_tabCCPNo,  m_preSelectSubCopyNo[i], m_tabInfo[i].m_color, m_tabInfo[i].m_strColor, m_tabInfo[i].m_childIndexList.ToArray()) );
+				m_parent.m_dataManager.m_tabBackupDat.Add( new TabBackupDat(tmp.FullPath, m_tabInfo[i].m_tabOpValue, m_tabInfo[i].m_tabOpValue2, m_tabInfo[i].m_tabOpValue3, m_tabInfo[i].m_tabOpValue4, m_tabInfo[i].m_tabOpCopyID, m_tabInfo[i].m_tabCCPNo,  m_preSelectSubCopyNo[i], m_tabInfo[i].m_color, m_tabInfo[i].m_strColor, m_tabInfo[i].m_childIndexList.ToArray()) );
 				i++;
 			}
 
-			m_dataManager.m_copyString1			= m_copyString1;
-			m_dataManager.m_copyString2			= m_copyString2;
-			m_dataManager.m_copyString3			= m_copyString3;
-			m_dataManager.m_copyString4			= m_copyString4;
-			m_dataManager.m_copyString5			= m_copyString5;
-			m_dataManager.m_copyString6			= m_copyString6;
-			m_dataManager.m_copyString7			= m_copyString7;
-			m_dataManager.m_copyString8			= m_copyString8;
-			m_dataManager.m_copyString9			= m_copyString9;
+			m_parent.m_dataManager.m_copyString1			= m_copyString1;
+			m_parent.m_dataManager.m_copyString2			= m_copyString2;
+			m_parent.m_dataManager.m_copyString3			= m_copyString3;
+			m_parent.m_dataManager.m_copyString4			= m_copyString4;
+			m_parent.m_dataManager.m_copyString5			= m_copyString5;
+			m_parent.m_dataManager.m_copyString6			= m_copyString6;
+			m_parent.m_dataManager.m_copyString7			= m_copyString7;
+			m_parent.m_dataManager.m_copyString8			= m_copyString8;
+			m_parent.m_dataManager.m_copyString9			= m_copyString9;
 
 			if (this.WindowState == FormWindowState.Normal)
 			{
-				m_dataManager.m_left			= this.Left;
-				m_dataManager.m_top				= this.Top;
-				m_dataManager.m_width			= this.Width;
-				m_dataManager.m_height			= this.Height;
-				m_dataManager.m_splitSize		= splitContainer1.SplitterDistance;
+				m_parent.m_dataManager.m_left			= this.Left;
+				m_parent.m_dataManager.m_top				= this.Top;
+				m_parent.m_dataManager.m_width			= this.Width;
+				m_parent.m_dataManager.m_height			= this.Height;
+				m_parent.m_dataManager.m_splitSize		= splitContainer1.SplitterDistance;
 			}
 			else
 			{
-				m_dataManager.m_left			= this.RestoreBounds.Left;
-				m_dataManager.m_top				= this.RestoreBounds.Top;
-				m_dataManager.m_width			= this.RestoreBounds.Width;
-				m_dataManager.m_height			= this.RestoreBounds.Height;
-				m_dataManager.m_splitSize		= splitContainer1.SplitterDistance;
+				m_parent.m_dataManager.m_left			= this.RestoreBounds.Left;
+				m_parent.m_dataManager.m_top				= this.RestoreBounds.Top;
+				m_parent.m_dataManager.m_width			= this.RestoreBounds.Width;
+				m_parent.m_dataManager.m_height			= this.RestoreBounds.Height;
+				m_parent.m_dataManager.m_splitSize		= splitContainer1.SplitterDistance;
 			}
 
-			m_dataManager.dockingBasePos		= new Rectangle(formParent.Left,formParent.Top,formParent.Width,formParent.Height);
-
-		//	m_dataManager.scriptListPos			= new Rectangle( formScriptList.Left, formScriptList.Top, formScriptList.Width, formScriptList.Height );
-
-			m_dataManager.m_toolOption[0]		= (menuItemSub1.Checked == true ? 1 : 0 );
-			m_dataManager.m_toolOption[1]		= (menuItemSub2.Checked == true ? 1 : 0 );
-			m_dataManager.m_toolOption[2]		= (menuItemSub3.Checked == true ? 1 : 0 );
 			
-			m_dataManager.m_toolOption[4]		= (menuItemSub5.Checked == true ? 1 : 0 );
-			m_dataManager.m_toolOption[5]		= (menuItemSub6.Checked == true ? 1 : 0);
-			m_dataManager.m_toolOption[6]		= (menuItemSub7.Checked == true ? 1 : 0);
-			m_dataManager.m_toolOption[7]		= (ToolStripMenuItem8.Checked == true ? 1 : 0);
+			m_parent.m_dataManager.dockingBasePos		= new System.Drawing.Rectangle(m_parent.Left,m_parent.Top,m_parent.Width,m_parent.Height);
+
+		//	formParent.m_dataManager.scriptListPos			= new Rectangle( formScriptList.Left, formScriptList.Top, formScriptList.Width, formScriptList.Height );
+
+			m_parent.m_dataManager.m_toolOption[0]		= (menuItemSub1.Checked == true ? 1 : 0 );
+			m_parent.m_dataManager.m_toolOption[1]		= (menuItemSub2.Checked == true ? 1 : 0 );
+			m_parent.m_dataManager.m_toolOption[2]		= (menuItemSub3.Checked == true ? 1 : 0 );
+			
+			m_parent.m_dataManager.m_toolOption[4]		= (menuItemSub5.Checked == true ? 1 : 0 );
+			m_parent.m_dataManager.m_toolOption[5]		= (menuItemSub6.Checked == true ? 1 : 0);
+			m_parent.m_dataManager.m_toolOption[6]		= (menuItemSub7.Checked == true ? 1 : 0);
+			m_parent.m_dataManager.m_toolOption[7]		= (ToolStripMenuItem8.Checked == true ? 1 : 0);
 			
 
-			m_dataManager.m_showTabLv			= int.Parse(toolStripMenuItem2.Text);
-			m_dataManager.m_showTabStrCount		= int.Parse(toolStripMenuItem3.Text);
+			m_parent.m_dataManager.m_showTabLv			= int.Parse(toolStripMenuItem2.Text);
+			m_parent.m_dataManager.m_showTabStrCount		= int.Parse(toolStripMenuItem3.Text);
 
-			formParent.StockPos();
-			m_dataManager.SettingSave("option.txt");
+			m_parent.StockPos();
+			m_parent.m_dataManager.SettingSave("option.txt");
 
 			for( i = 0; i < m_hotKey.Length; i++ ) if(m_hotKey[i] != null ) m_hotKey[i].Dispose();
 
@@ -285,10 +278,7 @@ namespace standScripter
 		//-----------------------------------------------------------------------------------
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			if( m_dataManager.SettingLoad("option.txt") == false )
-			{
-				m_dataManager.SettingLoad("_option.txt", true);
-			}
+			
 
 			
 
@@ -304,30 +294,27 @@ namespace standScripter
 			tabControl1.DrawItem += new DrawItemEventHandler(TabControl1_DrawItem);
 			//-----------------------------------
 
-			m_thumbnailWidth					= m_dataManager.m_thumbnailWidth;
-			m_thumbnailHeight					= m_dataManager.m_thumbnailHeight;
-			m_subThumbnailWidth					= m_dataManager.m_subThumbnailWidth;
-			m_subThumbnailHeight				= m_dataManager.m_subThumbnailHeight;
+			m_thumbnailWidth					= m_parent.m_dataManager.m_thumbnailWidth;
+			m_thumbnailHeight					= m_parent.m_dataManager.m_thumbnailHeight;
+			m_subThumbnailWidth					= m_parent.m_dataManager.m_subThumbnailWidth;
+			m_subThumbnailHeight				= m_parent.m_dataManager.m_subThumbnailHeight;
 
-			m_summaryFontSize					= m_dataManager.m_summaryFontSize;
+			m_summaryFontSize					= m_parent.m_dataManager.m_summaryFontSize;
 
-			m_copyString1						= m_dataManager.m_copyString1;
-			m_copyString2						= m_dataManager.m_copyString2;
-			m_copyString3						= m_dataManager.m_copyString3;
-			m_copyString4						= m_dataManager.m_copyString4;
-			m_copyString5						= m_dataManager.m_copyString5;
-			m_copyString6						= m_dataManager.m_copyString6;
-			m_copyString7						= m_dataManager.m_copyString7;
-			m_copyString8						= m_dataManager.m_copyString8;
-			m_copyString9						= m_dataManager.m_copyString9;
+			m_copyString1						= m_parent.m_dataManager.m_copyString1;
+			m_copyString2						= m_parent.m_dataManager.m_copyString2;
+			m_copyString3						= m_parent.m_dataManager.m_copyString3;
+			m_copyString4						= m_parent.m_dataManager.m_copyString4;
+			m_copyString5						= m_parent.m_dataManager.m_copyString5;
+			m_copyString6						= m_parent.m_dataManager.m_copyString6;
+			m_copyString7						= m_parent.m_dataManager.m_copyString7;
+			m_copyString8						= m_parent.m_dataManager.m_copyString8;
+			m_copyString9						= m_parent.m_dataManager.m_copyString9;
 			
 			textBox3.Text						= m_copyString1;
 
-//			this.Left							= m_dataManager.m_left;
-//			this.Top							= m_dataManager.m_top ;
-//			this.Width							= m_dataManager.m_width ;
-//			this.Height							= m_dataManager.m_height ;
-			splitContainer1.SplitterDistance	= m_dataManager.m_splitSize;
+
+			splitContainer1.SplitterDistance	= m_parent.m_dataManager.m_splitSize;
 
 			
 
@@ -340,25 +327,25 @@ namespace standScripter
 			radioButton30.Checked = true;
 			radioButton40.Checked = true;
 
-			menuItemSub1.Checked =	(m_dataManager.m_toolOption[0] == 1 ? true : false );
-			menuItemSub2.Checked =	(m_dataManager.m_toolOption[1] == 1 ? true : false );
-			menuItemSub3.Checked =	(m_dataManager.m_toolOption[2] == 1 ? true : false );
+			menuItemSub1.Checked =	(m_parent.m_dataManager.m_toolOption[0] == 1 ? true : false );
+			menuItemSub2.Checked =	(m_parent.m_dataManager.m_toolOption[1] == 1 ? true : false );
+			menuItemSub3.Checked =	(m_parent.m_dataManager.m_toolOption[2] == 1 ? true : false );
 			
-			menuItemSub5.Checked =	(m_dataManager.m_toolOption[4] == 1 ? true : false );
-			menuItemSub6.Checked =	(m_dataManager.m_toolOption[5] == 1 ? true : false);
-			menuItemSub7.Checked =	(m_dataManager.m_toolOption[6] == 1 ? true : false);
+			menuItemSub5.Checked =	(m_parent.m_dataManager.m_toolOption[4] == 1 ? true : false );
+			menuItemSub6.Checked =	(m_parent.m_dataManager.m_toolOption[5] == 1 ? true : false);
+			menuItemSub7.Checked =	(m_parent.m_dataManager.m_toolOption[6] == 1 ? true : false);
 			
-			ToolStripMenuItem8.Checked = (m_dataManager.m_toolOption[7] == 1 ? true : false);
+			ToolStripMenuItem8.Checked = (m_parent.m_dataManager.m_toolOption[7] == 1 ? true : false);
 
-			this.TopMost =			(m_dataManager.m_toolOption[4] == 1 ? true : false );
+			this.TopMost =			(m_parent.m_dataManager.m_toolOption[4] == 1 ? true : false );
 
 
 
-			toolStripMenuItem2.Text	= m_dataManager.m_showTabLv.ToString();
-			toolStripMenuItem3.Text = m_dataManager.m_showTabStrCount.ToString();
+			toolStripMenuItem2.Text	= m_parent.m_dataManager.m_showTabLv.ToString();
+			toolStripMenuItem3.Text = m_parent.m_dataManager.m_showTabStrCount.ToString();
 
 			int i = 0;
-			foreach( var tmp in m_dataManager.m_tabBackupDat )
+			foreach( var tmp in m_parent.m_dataManager.m_tabBackupDat )
 			{
 				if (treeView1.Nodes.Count == 0) break;
 
@@ -371,18 +358,18 @@ namespace standScripter
 				i++;
 			}
 
-			if(m_dataManager.m_tabBackupDat.Count > 0 )
+			if(m_parent.m_dataManager.m_tabBackupDat.Count > 0 )
 			{
 				RemoveTab();
 			}
 			SetValueRadio();
-			ShowExReplaceText( (m_dataManager.m_toolOption[5]==1?true:false) );
+			ShowExReplaceText( (m_parent.m_dataManager.m_toolOption[5]==1?true:false) );
 
-			for (int j = 0; j < m_dataManager.GetOptionStringCount(); j++)
+			for (int j = 0; j < m_parent.m_dataManager.GetOptionStringCount(); j++)
 			{
-				//m_dataManager.m_optionString[j] = "";
-				toolStripMenuItem2.Text = m_dataManager.m_showTabLv.ToString();
-				toolStripMenuItem3.Text = m_dataManager.m_showTabStrCount.ToString();
+				//formParent.m_dataManager.m_optionString[j] = "";
+				toolStripMenuItem2.Text = m_parent.m_dataManager.m_showTabLv.ToString();
+				toolStripMenuItem3.Text = m_parent.m_dataManager.m_showTabStrCount.ToString();
 			}
 
 			
@@ -402,7 +389,8 @@ namespace standScripter
 						int loopCount = record.Length;
 						for( int l = 0; l < loopCount; l++ )
 						{
-							m_nodeStateWList[tabNo][l] = (record[l]=='1');
+							if( m_nodeStateWList[tabNo].Count > l )
+								m_nodeStateWList[tabNo][l] = (record[l]=='1');
 						}
 						tabNo++;
 					
@@ -410,9 +398,6 @@ namespace standScripter
 				}
 				FlowNodesState(0);
 			}
-
-			formParent = new FormParent(this);
-			formParent.Show();
 
 			//m_hotKey[0] = new HotKey(MOD_KEY.CONTROL, Keys.S, formParent.m_blockList.Save );
 
@@ -490,7 +475,7 @@ namespace standScripter
 		public void tabControl1_MouseWheel(object sender, MouseEventArgs e)
 		{
 			int itemIndex = -1;
-			Rectangle rect;
+			System.Drawing.Rectangle rect;
 			for( int i = 0; i < tabControl1.TabPages.Count; i++ )
 			{
 				rect = tabControl1.GetTabRect(i);
@@ -555,46 +540,15 @@ namespace standScripter
 		}
 
 		//-----------------------------------------------------------------------------------
-		//win32 apiメッセージでctr+vを送る。秀丸に貼り付けるオプション用1
-		//-----------------------------------------------------------------------------------
-		public void SendHidemaru(bool isForceSend =false )
-		{
-			if( menuItemSub3.Checked == false && isForceSend == false ) return;
-
-			bool	bresult;
-			IntPtr  hWnd;
-			IntPtr  wParam, lParam;
-			string  sClassName  = "Hidemaru32Class";
-			string  sWindowText = null;
-			
-			// 秀丸のWindowハンドル取得
-			if ((hWnd = FindWindow(sClassName, sWindowText)) == IntPtr.Zero)
-			{
-				sClassName = "EmEditorMainFrame3";
-				if ((hWnd = FindWindow(sClassName, sWindowText)) == IntPtr.Zero)
-				{
-					//MessageBox.Show("秀丸・またはエムエディターを起動してください");
-					return;
-				}
-			}
-
-			// 秀丸のテキストエリアのWindowハンドル取得
-			hWnd	= FindWindowEx(hWnd, IntPtr.Zero, null, sWindowText);
-			wParam  = new IntPtr(0x41);
-			lParam  = IntPtr.Zero;
-			bresult = PostMessage(hWnd, 0x0302, lParam, lParam);
-		}
-
-		//-----------------------------------------------------------------------------------
 		/// 最初に画像の一覧を列挙して、ツリービューなどに反映する
 		//-----------------------------------------------------------------------------------
 		private void EnumGraphic()
 		{
 			
-			m_dataManager.Load("graphic.txt");
+			m_parent.m_dataManager.Load("graphic.txt");
 
 			//ツリービュー構築
-			foreach ( GenreTree nowGenre in m_dataManager.m_genreTreeMaster )
+			foreach ( GenreTree nowGenre in m_parent.m_dataManager.m_genreTreeMaster )
 			{
 				SetTreeViewLayer( nowGenre, null );
 			}
@@ -675,17 +629,17 @@ namespace standScripter
 			string		exGenre	= "";
 
 			m_bigPicCount		= 0;
-			m_isUseSubThumSize	= m_dataManager.m_genreTreeByGenreName[nowGenre].m_isUseSubThumbSize;
+			m_isUseSubThumSize	= m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_isUseSubThumbSize;
 
 			m_activeDataSet.Clear();
 
-			if( m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg ) 
+			if( m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg ) 
 			{
 				exGenre = nowGenre + m_preCCPname;
 
-				foreach( var genre in m_dataManager.m_genreTreeByGenreName[exGenre].m_childGenre )
+				foreach( var genre in m_parent.m_dataManager.m_genreTreeByGenreName[exGenre].m_childGenre )
 				{
-					foreach( var tmpData in m_dataManager.m_dataByGenre[genre.m_genreName] )
+					foreach( var tmpData in m_parent.m_dataManager.m_dataByGenre[genre.m_genreName] )
 					{
 						if( tmpData.m_summary.IndexOf("立ち絵データ") == -1  )
 						{
@@ -696,10 +650,10 @@ namespace standScripter
 			}
 			else
 			{
-				m_bigPicCount = m_dataManager.m_genreTreeByGenreName[nowGenre].m_useBigThumbnail;
-				if( m_bigPicCount > 0 ) offsetX = m_dataManager.m_bigThumbnailWidth;
+				m_bigPicCount = m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_useBigThumbnail;
+				if( m_bigPicCount > 0 ) offsetX = m_parent.m_dataManager.m_bigThumbnailWidth;
 
-				foreach( DataSet tmpData in m_dataManager.m_dataByGenre[nowGenre] )
+				foreach( DataSet tmpData in m_parent.m_dataManager.m_dataByGenre[nowGenre] )
 				{
 					m_activeDataSet.Add( tmpData );
 				}
@@ -725,7 +679,7 @@ namespace standScripter
 						if( m_bigPicCount <= count )
 						{
 							//直接改行が指定された場合
-							if ( ( (m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg && preGenre != tmpData.m_genre && preGenre != "")) && alreadyLF == false )
+							if ( ( (m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg && preGenre != tmpData.m_genre && preGenre != "")) && alreadyLF == false )
 							{
 								posX			= 0;
 								posY			+= workHeight;
@@ -739,11 +693,11 @@ namespace standScripter
 							{
 								if( tmpData.m_useBig == false)
 								{
-									m_imgManager.LoadImage(tmpData, workWidth, workHeight, m_dataManager.m_faceRectByGenre);
+									m_imgManager.LoadImage(tmpData, workWidth, workHeight, m_parent.m_dataManager.m_faceRectByGenre);
 								}
 								else
 								{
-									m_imgManager.LoadImage(tmpData, m_dataManager.m_bigThumbnailWidth, m_dataManager.m_bigThumbnailHeight);
+									m_imgManager.LoadImage(tmpData, m_parent.m_dataManager.m_bigThumbnailWidth, m_parent.m_dataManager.m_bigThumbnailHeight);
 								}
 							}
 
@@ -765,7 +719,7 @@ namespace standScripter
 
 								Brush drawBrus		= new SolidBrush( tmpData.m_summaryColor );
 
-								g.DrawString( tmpStr, tmpFont, drawBrus, new Rectangle(offsetX + posX, summaryPosY, workWidth, workHeight), sf);
+								g.DrawString( tmpStr, tmpFont, drawBrus, new System.Drawing.Rectangle(offsetX + posX, summaryPosY, workWidth, workHeight), sf);
 
 								tmpFont.Dispose();
 							}
@@ -791,11 +745,11 @@ namespace standScripter
 							//描画前ロード
 							if (m_imgManager.m_imageDictionary.ContainsKey(tmpData.m_fileName) == false)
 							{
-								m_imgManager.LoadImage(tmpData, m_dataManager.m_bigThumbnailWidth, m_dataManager.m_bigThumbnailHeight);
+								m_imgManager.LoadImage(tmpData, m_parent.m_dataManager.m_bigThumbnailWidth, m_parent.m_dataManager.m_bigThumbnailHeight);
 							}
 							m_activeDataSet[count].m_x = 0;
-							m_activeDataSet[count].m_y = count * m_dataManager.m_bigThumbnailHeight;
-							g.DrawImage(m_imgManager.m_imageDictionary[tmpData.m_fileName].thmbnailImage, 0, m_bigPicPosY + count * m_dataManager.m_bigThumbnailHeight, m_dataManager.m_bigThumbnailWidth, m_dataManager.m_bigThumbnailHeight);
+							m_activeDataSet[count].m_y = count * m_parent.m_dataManager.m_bigThumbnailHeight;
+							g.DrawImage(m_imgManager.m_imageDictionary[tmpData.m_fileName].thmbnailImage, 0, m_bigPicPosY + count * m_parent.m_dataManager.m_bigThumbnailHeight, m_parent.m_dataManager.m_bigThumbnailWidth, m_parent.m_dataManager.m_bigThumbnailHeight);
 						}
 						count++;
 					}
@@ -827,7 +781,7 @@ namespace standScripter
 				int	 offsetX	= 0;
 				int workHeight	= (m_isUseSubThumSize?m_subThumbnailHeight : m_thumbnailHeight);
 
-				if( m_bigPicCount > 0)		offsetX = m_dataManager.m_bigThumbnailWidth;
+				if( m_bigPicCount > 0)		offsetX = m_parent.m_dataManager.m_bigThumbnailWidth;
 				
 				int totalHeight = drawAllHeight + workHeight;
 
@@ -904,7 +858,7 @@ namespace standScripter
 			//ドラッグスクロール準備
 			if(e.Button == MouseButtons.Left)
 			{ 
-				if (m_bigPicCount > 0 && e.X <= m_dataManager.m_bigThumbnailWidth)
+				if (m_bigPicCount > 0 && e.X <= m_parent.m_dataManager.m_bigThumbnailWidth)
 				{
 					m_isPicDrageState = 1;
 				}
@@ -982,7 +936,7 @@ namespace standScripter
 			}
 
 			//大立ち絵チェック
-			if( m_bigPicCount > 0 && e.X <= m_dataManager.m_bigThumbnailWidth ) panelNo = 0;
+			if( m_bigPicCount > 0 && e.X <= m_parent.m_dataManager.m_bigThumbnailWidth ) panelNo = 0;
 
 			if (panelNo >= m_activeDataSet.Count) return;
 
@@ -1106,26 +1060,24 @@ namespace standScripter
 
 				Clipboard.SetText(copyString);
 				this.Text = copyString;
-
-				//this.SendHidemaru(isSend);
 				
 				string sizeType = optionString2;
 
-				if( m_nowSelectBankNo == 0 )
+				if( m_parent.m_nowSelectBankNo == 0 )
 				{
-					SetBG( fileName );
+					m_parent.SetBG( fileName );
 				}else{
-					if( m_nowSelectBankNo == 6 )
+					if( m_parent.m_nowSelectBankNo == 6 )
 					{
-						SetFace(fileName);
+						m_parent.SetFace(fileName);
 					}
-					else if( m_nowSelectBankNo != 7 ){
+					else if( m_parent.m_nowSelectBankNo != 7 ){
 						thumbImgName	= thumbImgName.Replace("	","").Replace("\r\n","").Replace("%st","");
-						SetStand(thumbImgName, m_nowSelectBankNo, sizeType );
+						m_parent.SetStand(thumbImgName, m_parent.m_nowSelectBankNo, sizeType );
 					}
 				}
 
-				formParent.m_blockList.UpdateBlockTxtToList(false);
+				m_parent.m_blockList.UpdateBlockTxtToList(false);
 
 				if( m_isCallFromBlocklist && this.IsFloat )	this.Hide();//SendToBack();
 			} 
@@ -1141,25 +1093,7 @@ namespace standScripter
 
 
 
-		//-----------------------------------------------------------------------------------
-		//立ち絵仮設定ツール追加機能。
-		//-----------------------------------------------------------------------------------
-		private void SetStand( string thumbName, int bankNo, string sizeType )
-		{
 
-			formParent.m_blockList.SetStand( thumbName, bankNo, sizeType );
-		}
-
-		private void SetBG( string bgName )
-		{
-			formParent.m_blockList.SetBG(bgName);
-		}
-
-		private void SetFace( string faceName )
-		{
-			formParent.m_blockList.SetFace(faceName);
-		}
-		
 
 	
 		//-----------------------------------------------------------------------------------
@@ -1303,11 +1237,11 @@ namespace standScripter
 			string nowGenre = totalParentName + treeView1.SelectedNode.Text;
 			m_tmpReceive = true;
 			comboBox2.Items.Clear();
-			if( m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg )
+			if( m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_CCPFlg )
 			{
 				comboBox2.Enabled = true;
 				
-				foreach( var tmp in m_dataManager.m_genreTreeByGenreName[nowGenre].m_childGenre )
+				foreach( var tmp in m_parent.m_dataManager.m_genreTreeByGenreName[nowGenre].m_childGenre )
 				{
 					comboBox2.Items.Add( tmp.m_showGenreName );
 				}
@@ -1473,7 +1407,7 @@ namespace standScripter
 		private void SetOptionStringNo( int no )
 		{
 			m_receiveFlg		   = true;
-			textBox1.Text		  = m_dataManager.m_optionString[ no ];
+			textBox1.Text		  = m_parent.m_dataManager.m_optionString[ no ];
 			m_selectOptionStringNo = no;
 			m_receiveFlg		   = false;
 
@@ -1501,7 +1435,7 @@ namespace standScripter
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			if( m_receiveFlg == false )	m_dataManager.m_optionString[m_selectOptionStringNo] = textBox1.Text;
+			if( m_receiveFlg == false )	m_parent.m_dataManager.m_optionString[m_selectOptionStringNo] = textBox1.Text;
 
 		}
 
@@ -1530,7 +1464,20 @@ namespace standScripter
 
 			if( e.KeyCode == Keys.Escape && m_isCallFromBlocklist ) this.Hide();//SendToBack();
 
-			if( e.KeyCode == Keys.R && this.IsFloat == true ) this.Hide();
+			if( e.KeyCode == Keys.R && this.IsFloat == true )
+			{
+				if( retCX != -1 && retCY != -1 )
+				{
+					this.Left = retCX - (this.Width/2);;
+					this.Top = retCY - (this.Height/2);
+					retCX = -1;
+					retCY = -1;
+				}
+				else
+				{
+					this.Hide();
+				}
+			}
 		}
 
 		/// <summary>
@@ -1632,7 +1579,7 @@ namespace standScripter
 				tmpParent	  = tmpParent.Parent;
 			}
 
-			if (m_dataManager.m_genreTreeByGenreName.TryGetValue(totalGenreText, out refGenre) == false) return;
+			if (m_parent.m_dataManager.m_genreTreeByGenreName.TryGetValue(totalGenreText, out refGenre) == false) return;
 
 			if (refGenre.m_autoExpand)
 			{
@@ -2185,21 +2132,21 @@ namespace standScripter
 
 		private void setSubText2(int id)
 		{
-			textBox2.Text = m_dataManager.m_optionStringLv2[id]; 
+			textBox2.Text = m_parent.m_dataManager.m_optionStringLv2[id]; 
 
 			if( m_receiveFlg == false ) SetSelectOptionStringNo2(id);
 		}
 
 		private void setSubText3(int id)
 		{
-			textBox4.Text = m_dataManager.m_optionStringLv3[id];
+			textBox4.Text = m_parent.m_dataManager.m_optionStringLv3[id];
 
 			if (m_receiveFlg == false) SetSelectOptionStringNo3(id);
 		}
 
 		private void setSubText4(int id)
 		{
-			textBox5.Text = m_dataManager.m_optionStringLv4[id];
+			textBox5.Text = m_parent.m_dataManager.m_optionStringLv4[id];
 
 			if (m_receiveFlg == false) SetSelectOptionStringNo4(id);
 		}
@@ -2348,13 +2295,30 @@ namespace standScripter
 
 
 
-		public void hotKey_HotKeyPush( bool isTopMost = true ) {
+		public void hotKey_HotKeyPush( bool isTopMost = true, int cx = -1, int cy = -1)
+		{
 			
-			//if( m_dataManager.m_globalHookUse == 1 ){
+			if( cx != -1 && cy != -1 )
+			{
+				retCX = this.AccessibilityObject.Bounds.Left + (this.Width/2);
+				retCY = this.AccessibilityObject.Bounds.Top + (this.Height/2);
+					
+				int width = this.AccessibilityObject.Bounds.Width;
+				int heigth = this.AccessibilityObject.Bounds.Height;
+
+				System.Drawing.Rectangle newPos = new System.Drawing.Rectangle(cx - (width/2), cy-(heigth/2), width,heigth);
+				this.SetBounds(newPos.Left,newPos.Top,newPos.Width,newPos.Height);
+				
+
+				
+			}
+
+			//if( formParent.m_dataManager.m_globalHookUse == 1 ){
 				this.Show();
 				this.Visible = true;
 				this.BringToFront();
 				this.WindowState = FormWindowState.Normal;
+
 				this.TopMost = isTopMost;
 				this.Activate();
 				this.Update();
@@ -2365,7 +2329,7 @@ namespace standScripter
 		public void DoLoop(){
 
 			//ホールド式
-			//if( m_dataManager.m_globalHookUse == 1 ){
+			//if( formParent.m_dataManager.m_globalHookUse == 1 ){
 				
 				if( m_isGlobalPush == 0 && (GetAsyncKeyState(Keys.IMENonconvert) & 0x8000) != 0){
 					hotKey_HotKeyPush();
@@ -2430,7 +2394,7 @@ namespace standScripter
 		private void tabControl1_MouseDown(object sender, MouseEventArgs e)
 		{
 			int itemIndex = -1;
-			Rectangle rect;
+			System.Drawing.Rectangle rect;
 			for (int i = 0; i < tabControl1.TabPages.Count; i++)
 			{
 				rect = tabControl1.GetTabRect(i);
@@ -2462,7 +2426,7 @@ namespace standScripter
 			m_isTabDragDrop = false;
 
 			int itemIndex = -1;
-			Rectangle rect;
+			System.Drawing.Rectangle rect;
 
 			for (int i = 0; i < tabControl1.TabPages.Count; i++)
 			{
@@ -2552,28 +2516,11 @@ namespace standScripter
 
 		}
 
-		private void funcStrCopyBtn1_Click(object sender, EventArgs e)
-		{
 
-			Clipboard.SetText( SetClipboadFuncStr(0) );
-			this.SendHidemaru();
-		}
-
-		private void funcStrCopyBtn2_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText( SetClipboadFuncStr(1) );
-			this.SendHidemaru();
-		}
-
-		private void funcStrCopyBtn3_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText( SetClipboadFuncStr(2) );
-			this.SendHidemaru();
-		}
 
 		private string SetClipboadFuncStr(int id)
 		{
-			string ret = m_dataManager.m_funcString[id];
+			string ret = m_parent.m_dataManager.m_funcString[id];
 			
 			ret = ret.Replace(  @"\t", "	");
 			ret = ret.Replace(  @"\n", System.Environment.NewLine );
@@ -2656,6 +2603,16 @@ namespace standScripter
 			}
 		}
 
+		private void オプション指定ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void MainForm_LocationChanged(object sender, EventArgs e)
+		{
+
+		}
+
 		private void tabControl1_MouseMove(object sender, MouseEventArgs e)
 		{
 			if( m_isPreTabDragDrop == true ) m_isTabDragDrop = true;
@@ -2663,7 +2620,7 @@ namespace standScripter
 
 			int itemIndex = -1;
 
-			Rectangle rect = new Rectangle(0,0,0,0);
+			System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0,0,0,0);
 			for (int i = 0; i < tabControl1.TabPages.Count; i++)
 			{
 				rect = tabControl1.GetTabRect(i);
@@ -2699,13 +2656,7 @@ namespace standScripter
 
 		}
 
-
-		public void SetBlockTxtToList()
-		{
-			formParent.m_blockList.CopyBlockData(m_scenarioManager.m_toolBlockList);
-			formParent.m_blockList.UpdateBlockTxtToList(true);
-		}
-
+		
 
 
 		private void menuItemSub5_Click(object sender, EventArgs e)

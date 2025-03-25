@@ -35,6 +35,7 @@
 			this.プレビューの表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.スクリプトの表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ファイル一覧の表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ビューワーの表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -46,7 +47,6 @@
 			this.dockPanel1.Name = "dockPanel1";
 			this.dockPanel1.Size = new System.Drawing.Size(800, 426);
 			this.dockPanel1.TabIndex = 0;
-			this.dockPanel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dockPanel1_DragDrop);
 			// 
 			// menuStrip1
 			// 
@@ -57,13 +57,15 @@
 			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
+
 			// 
 			// dockParentMenu
 			// 
 			this.dockParentMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.プレビューの表示非表示ToolStripMenuItem,
             this.スクリプトの表示非表示ToolStripMenuItem,
-            this.ファイル一覧の表示非表示ToolStripMenuItem});
+            this.ファイル一覧の表示非表示ToolStripMenuItem,
+            this.ビューワーの表示非表示ToolStripMenuItem});
 			this.dockParentMenu.Name = "dockParentMenu";
 			this.dockParentMenu.Size = new System.Drawing.Size(150, 20);
 			this.dockParentMenu.Text = "各ウインドウの表示切り替え";
@@ -89,6 +91,13 @@
 			this.ファイル一覧の表示非表示ToolStripMenuItem.Text = "ファイル一覧の表示/非表示";
 			this.ファイル一覧の表示非表示ToolStripMenuItem.Click += new System.EventHandler(this.ファイル一覧の表示非表示ToolStripMenuItem_Click);
 			// 
+			// ビューワーの表示非表示ToolStripMenuItem
+			// 
+			this.ビューワーの表示非表示ToolStripMenuItem.Name = "ビューワーの表示非表示ToolStripMenuItem";
+			this.ビューワーの表示非表示ToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.ビューワーの表示非表示ToolStripMenuItem.Text = "ビューワーの表示/非表示";
+			this.ビューワーの表示非表示ToolStripMenuItem.Click += new System.EventHandler(this.ビューワーの表示非表示ToolStripMenuItem_Click);
+			// 
 			// FormParent
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -100,7 +109,7 @@
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "FormParent";
-			this.Text = "立絵仮打ツール：スクリプト編集";
+			this.Text = "立絵仮打ツール：";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormParent_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormParent_FormClosed);
 			this.Load += new System.EventHandler(this.FormParent_Load);
@@ -120,5 +129,6 @@
 		private System.Windows.Forms.ToolStripMenuItem プレビューの表示非表示ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem スクリプトの表示非表示ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ファイル一覧の表示非表示ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ビューワーの表示非表示ToolStripMenuItem;
 	}
 }

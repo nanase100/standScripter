@@ -70,7 +70,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>standScripter.Program</StartupObject>
@@ -149,17 +149,11 @@
     <Compile Include="DockFormPreview.Designer.cs">
       <DependentUpon>DockFormPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpForm.cs">
+    <Compile Include="DockStandList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="helpForm.Designer.cs">
-      <DependentUpon>helpForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="DockStandList.Designer.cs">
+      <DependentUpon>DockStandList.cs</DependentUpon>
     </Compile>
     <Compile Include="FormGVPreview.cs">
       <SubType>Form</SubType>
@@ -201,11 +195,8 @@
       <DependentUpon>DockFormPreview.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="helpForm.resx">
-      <DependentUpon>helpForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="DockStandList.resx">
+      <DependentUpon>DockStandList.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FormGVPreview.resx">

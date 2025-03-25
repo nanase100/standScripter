@@ -399,7 +399,6 @@
 			this.button8.TabIndex = 20;
 			this.button8.Text = "ヘルプ";
 			this.button8.UseVisualStyleBackColor = true;
-			this.button8.Click += new System.EventHandler(this.button8_Click);
 			// 
 			// DockFormBlockList
 			// 

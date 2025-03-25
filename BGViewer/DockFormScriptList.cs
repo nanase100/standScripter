@@ -10,7 +10,7 @@ namespace standScripter
 {
 	public partial class DockFormScriptList : WeifenLuo.WinFormsUI.Docking.DockContent
 	{
-		public MainForm m_parent = null;
+		public FormParent m_parent = null;
 
 		public DockFormScriptList()
 		{
@@ -45,12 +45,8 @@ namespace standScripter
 		/// <param name="e"></param>
 		private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			string path = m_parent.m_dataManager.m_gameDir + "/scene/" + listView1.SelectedItems[0].Text +".txt";
-			m_parent.m_scenarioManager.Load(path);//
-			m_parent.SetBlockTxtToList();
-
-			m_parent.formParent.m_blockList.SetActiveScript( listView1.SelectedItems[0].Text );
-			m_parent.formParent.m_blockList.DataGrdiView(true);
+			
+			m_parent.LoadScriptFile( listView1.SelectedItems[0].Text);
 		}
 
 		/// <summary>

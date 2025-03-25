@@ -19,31 +19,30 @@ namespace standScripter
 	{
 
 		private System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-		TimeSpan ts;
-
-
+		
 		public List<textBlockData>	m_messageBaseData		= new List<textBlockData>();		//内容はシナリオマネージャーが作った、ツール向け加工済データ。
 		public List<textBlockData>	m_messageBlockGridList	= new List<textBlockData>();		//内容は同一。ただし、立ち絵や背景の継続表示用
 
-		public MainForm				m_parent;
+		//public MainForm			m_parent;
+		public FormParent			m_parent;
 		private soundPlayer			m_soundPlayer		= null;
 		private string				activeScriptName	= "";
 
-		private	int				m_cmTmpRow	= -1;
-		private	int				m_cmTmpCol	= -1;
+		private	int					m_cmTmpRow	= -1;
+		private	int					m_cmTmpCol	= -1;
 
 
 		//コピペ用データ
-		private string			m_copySrcBGname		= "";
-		private textStandData	m_copySrcStand		= null;
-		private string			m_copySrcFacename	= "";
-		private string			m_copySrcComment	= "";
+		private string				m_copySrcBGname		= "";
+		private textStandData		m_copySrcStand		= null;
+		private string				m_copySrcFacename	= "";
+		private string				m_copySrcComment	= "";
 
-		private int				m_dragSrcRow		= -1;
-		private int				m_dragSrcCol		= -1;
+		private int					m_dragSrcRow		= -1;
+		private int					m_dragSrcCol		= -1;
 
-		private int				m_dragDestRow		= -1;
-		private int				m_dragDestCol		= -1;
+		private int					m_dragDestRow		= -1;
+		private int					m_dragDestCol		= -1;
 
 
 		public DockFormBlockList()
@@ -175,8 +174,8 @@ namespace standScripter
 						{
 							bgPath = tmpThum.m_fileName.Replace(@"/",@"\");
 
-							if( tmp.isBGContinue == false)	refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).mainImage;
-							else							refBitmap = m_parent.m_bmpManager.LoadBitmap(bgPath).alphaImage;
+							if( tmp.isBGContinue == false)	refBitmap = m_parent.m_standList.m_bmpManager.LoadBitmap(bgPath).mainImage;
+							else							refBitmap = m_parent.m_standList.m_bmpManager.LoadBitmap(bgPath).alphaImage;
 							(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[1].Value = refBitmap;
 							break;
 							
@@ -198,7 +197,7 @@ namespace standScripter
 
 							if(  System.IO.File.Exists(facePath) )
 							{
-								refBitmap = m_parent.m_bmpManager.LoadBitmap(facePath).mainImage;
+								refBitmap = m_parent.m_standList.m_bmpManager.LoadBitmap(facePath).mainImage;
 
 								(isInit?newRow:dataGridView1.Rows[rowIndex*2]).Cells[7].Value = refBitmap;
 							}
@@ -232,7 +231,7 @@ namespace standScripter
 							
 							//if(  System.IO.File.Exists(path) )
 							{
-								refBitmap = (tmpStand.isContinue == false?m_parent.m_bmpManager.LoadBitmap(path).mainImage:m_parent.m_bmpManager.LoadBitmap(path).alphaImage);
+								refBitmap = (tmpStand.isContinue == false?m_parent.m_standList.m_bmpManager.LoadBitmap(path).mainImage:m_parent.m_standList.m_bmpManager.LoadBitmap(path).alphaImage);
 							}
 							if( bankIndex != -1)
 							{
@@ -262,12 +261,12 @@ namespace standScripter
 
 								if( isSame )
 								{
-									(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImageMiss[nowPos];
+									(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_standList.m_bmpManager.posImageMiss[nowPos];
 								}
 								else
 								{
-									if( isPosContinue )	(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImageCont[nowPos];
-									else				(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_bmpManager.posImage[nowPos];
+									if( isPosContinue )	(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_standList.m_bmpManager.posImageCont[nowPos];
+									else				(isInit?marginRow:dataGridView1.Rows[rowIndex*2+1]).Cells[bankIndex].Value = m_parent.m_standList.m_bmpManager.posImage[nowPos];
 								}
 							}
 						}
@@ -301,14 +300,12 @@ namespace standScripter
 		public 	void UpdateBlockTxtToList( bool isInit )
 		{
 			
-
 			CreateGridList();
 
 			// 計測開始
 			sw.Start();
 
 			UpdateBlockTxtToListS(isInit);
-
 			
 			// 結果表示
 			sw.Stop();			
@@ -448,6 +445,8 @@ namespace standScripter
 			//string path = activeScriptName +".txt";
 			string path = m_parent.m_dataManager.m_gameDir + "\\scene\\"+activeScriptName +".txt";
 			m_parent.m_scenarioManager.Save(path,m_messageBaseData);
+
+			m_parent.SetEditFlg(false);
 		}
 
 
@@ -506,8 +505,12 @@ namespace standScripter
 
 			if( col == 0 ) { PlayVoice(row/2); }
 			
-
-			if( col >= 1 && col != 8 && row%2==0) { m_parent.m_isCallFromBlocklist = true;  m_parent.hotKey_HotKeyPush( false );	}
+			if( col >= 1 && col != 8 && row%2==0) { 
+				m_parent.m_standList.m_isCallFromBlocklist = true;
+				int x = System.Windows.Forms.Cursor.Position.X;
+				int y = System.Windows.Forms.Cursor.Position.Y;
+				m_parent.m_standList.hotKey_HotKeyPush( false,x,y );	
+			}
 
 			if( col == 8) dataGridView1.BeginEdit(true);
 		}
@@ -594,12 +597,12 @@ namespace standScripter
 
 			bool isGuardPosDup = chBoxGuardPosDup.Checked;
 
-			switch( e.KeyCode)
+			switch( e.KeyData)
 			{
 				//立ち絵の左右
 				case Keys.W:		ChangeStandPos(posType.EMPTY,	isGuardPosDup);			break;
 				case Keys.A:		ChangeStandPos(posType.H3_LEFT,	isGuardPosDup);			break;
-				case Keys.S:		ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
+				case Keys.S:		if( (e.Modifiers&Keys.ControlKey)==Keys.ControlKey) ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
 				case Keys.D:		ChangeStandPos(posType.CENTER,	isGuardPosDup);			break;
 				case Keys.F:		if(e.Control == true) textBox1.Focus(); else ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
 				case Keys.G:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
@@ -717,6 +720,9 @@ namespace standScripter
 			}
 
 			UpdateBlockTxtToList(false);
+
+			m_parent.SetEditFlg();
+
 		}
 
 
@@ -727,10 +733,11 @@ namespace standScripter
 		{
 			int row = dataGridView1.CurrentCell.RowIndex/2;
 
-
 			m_messageBaseData[row].isStandClear = !(m_messageBaseData[row].isStandClear);
 
 			UpdateBlockTxtToList(false);
+
+			m_parent.SetEditFlg();
 		}
 
 
@@ -785,6 +792,8 @@ namespace standScripter
 
 			SendPreviewInfo();
 
+			m_parent.SetEditFlg();
+
 		}
 
 
@@ -811,7 +820,6 @@ namespace standScripter
 				int swapBankID = -1;
 				int loopCount2 = m_messageBaseData[row].standDatas.Count;
 
-
 				for( int j = 0; j < loopCount2; j++ )
 				{
 					if (m_messageBaseData[row].standDatas[j].bankID != col )
@@ -837,6 +845,8 @@ namespace standScripter
 				}
 			}
 			if( isUpdate ) UpdateBlockTxtToList(false);
+
+			m_parent.SetEditFlg();
 		}
 
 
@@ -864,7 +874,6 @@ namespace standScripter
 					isUpdate = true;
 				}
 
-
 				//立ち絵の削除確認
 				for( int j = 0; j < m_messageBaseData[row].standDatas.Count; j++ )
 				{
@@ -884,6 +893,8 @@ namespace standScripter
 
 			}
 			if( isUpdate ) UpdateBlockTxtToList(false);
+
+			m_parent.SetEditFlg();
 		}
 
 
@@ -911,12 +922,11 @@ namespace standScripter
 
 		private void dataGridView1_CurrentCellChanged(object sender, EventArgs e)
 		{
-
 			if( dataGridView1.CurrentCell == null)return;
 
 			SendPreviewInfo();
 
-			
+
 		}
 
 
@@ -931,10 +941,10 @@ namespace standScripter
 
 			int rowNo = m_parent.m_nowSelectBlockNo/2;
 
-			if( m_parent.formParent.m_blockList.m_messageBlockGridList.Count > rowNo )
+			if( m_parent.m_blockList.m_messageBlockGridList.Count > rowNo )
 			{
-				var tmp = m_parent.formParent.m_blockList.m_messageBlockGridList[rowNo];
-				m_parent.formParent.m_preview.SetPreviewData( tmp.bgFileName, tmp.faceFileName, tmp.standDatas, tmp.textBlock );
+				var tmp = m_parent.m_blockList.m_messageBlockGridList[rowNo];
+				m_parent.m_preview.SetPreviewData( tmp.bgFileName, tmp.faceFileName, tmp.standDatas, tmp.textBlock );
 			}
 		}
 
@@ -1001,7 +1011,13 @@ namespace standScripter
 		{
 			if( e.ColumnIndex == 8)
 			{
-				m_messageBaseData[e.RowIndex/2].preProc = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+				//セルの文字列全部削除すると "" ではなく、 null が返ってくるので…
+				if( dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null )
+					m_messageBaseData[e.RowIndex/2].preProc = "";
+				else
+					m_messageBaseData[e.RowIndex/2].preProc = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+				m_parent.SetEditFlg();
 			}
 
 		}
@@ -1125,7 +1141,6 @@ namespace standScripter
 				addTmp.standPosType	= newPos;
 			}
 			
-
 			if( isExist == false ) m_messageBaseData[blockNo].standDatas.Add( addTmp);
 		}
 
@@ -1479,12 +1494,7 @@ namespace standScripter
 			m_parent.m_dataManager.m_soundVolume = trackBar1.Value;
 		}
 
-		private void button8_Click(object sender, EventArgs e)
-		{
-			helpForm helpForm = new helpForm(System.Windows.Forms.Cursor.Position.X,System.Windows.Forms.Cursor.Position.Y);
-			helpForm.ShowDialog();
-			helpForm.Dispose();
-		}
+
 	}
 
 	/// <summary>

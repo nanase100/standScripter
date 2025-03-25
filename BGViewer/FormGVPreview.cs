@@ -13,7 +13,7 @@ namespace standScripter
 {
 	public partial class FormGVPreview : Form
 	{
-		private MainForm	m_pParentForm1;
+		private DockStandList	m_pParentForm1;
 		private string		m_fileName;
 		private int			m_x;
 		private int			m_y;
@@ -24,7 +24,7 @@ namespace standScripter
 		//-----------------------------------------------------------------------------------
 		//
 		//-----------------------------------------------------------------------------------
-		public FormGVPreview( MainForm parentForm, string fileName, int x, int y, bool isEditThumbnailRect  )
+		public FormGVPreview( DockStandList parentForm, string fileName, int x, int y, bool isEditThumbnailRect  )
 		{
 			InitializeComponent();
 

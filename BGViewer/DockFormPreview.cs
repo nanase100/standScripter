@@ -10,8 +10,8 @@ namespace standScripter
 {
 	public partial class DockFormPreview : WeifenLuo.WinFormsUI.Docking.DockContent
 	{
-		public MainForm m_parent = null;
-
+		//public DockStandList m_parent = null;
+		public FormParent m_parent = null;
 
 		public DockFormPreview()
 		{
@@ -27,7 +27,7 @@ namespace standScripter
 		public void SetPreviewData( string bgName, string faceName, List<textStandData> standList, string message = "" )
 		{
 
-			this.Refresh();
+			//this.Refresh();
 
 			//Graphics gs = pictureBox1.CreateGraphics();
 
@@ -44,17 +44,15 @@ namespace standScripter
 			{
 				bgName = bgName.Replace("\r\n","");
 
-				var tmpBmp = m_parent.m_bmpManager.LoadPreviewBitmap(bgName);
+				var tmpBmp = m_parent.m_standList.m_bmpManager.LoadPreviewBitmap(bgName);
 				//if( tmpBmp != null )	gs.DrawImage( tmpBmp,0,0,tmpBmp.Width,tmpBmp.Height);
 				if( tmpBmp != null )	gs.DrawImage( tmpBmp,0,0,1280,720);
 			}
 
-			
-
 			//立ち絵の描画
 			foreach( var standData in standList )
 			{
-				var tmpBmp = m_parent.m_bmpManager.LoadPreviewBitmap(standData.toolImgName);
+				var tmpBmp = m_parent.m_standList.m_bmpManager.LoadPreviewBitmap(standData.toolImgName);
 
 				if( tmpBmp == null ) continue;
 
@@ -76,7 +74,7 @@ namespace standScripter
 			if( faceName!="")
 			{
 				Bitmap tmpBmp = null;
-				foreach( var tmpDic in m_parent.m_bmpManager.m_bitmapDictionary )
+				foreach( var tmpDic in m_parent.m_standList.m_bmpManager.m_bitmapDictionary )
 				{
 					if( tmpDic.Key.IndexOf(faceName) != -1 ) tmpBmp = tmpDic.Value.mainImage;
 				}
@@ -114,37 +112,35 @@ namespace standScripter
 		{
 			if( e.Delta < 0 )
 			{
-				m_parent.formParent.m_blockList.NextMessage(true);
+				m_parent.m_blockList.NextMessage(true);
 			}
 			else
 			{
-				m_parent.formParent.m_blockList.NextMessage(false);
+				m_parent.m_blockList.NextMessage(false);
 			}
 		}
 
 		private void DockFormPreview_KeyDown(object sender, KeyEventArgs e)
 		{
-			if( e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.Enter|| e.KeyCode == Keys.Down ) m_parent.formParent.m_blockList.NextMessage(true);
+			if( e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.Enter|| e.KeyCode == Keys.Down ) m_parent.m_blockList.NextMessage(true);
 
-			if( e.KeyCode == Keys.Up ) m_parent.formParent.m_blockList.NextMessage(false);
+			if( e.KeyCode == Keys.Up ) m_parent.m_blockList.NextMessage(false);
 
 			e.Handled = true;
 		}
 
 		protected override bool ProcessDialogKey(Keys keyData)
 		{
-		  switch (keyData)
-		  {
-			case Keys.Down:
-			case Keys.Up:
-//			case Keys.Left:
-//			case Keys.Right:
-				return false;
-			default:
-			  return base.ProcessDialogKey(keyData);
-			  
-		  }
-		  return true;
+			switch (keyData)
+			{
+				case Keys.Down:
+				case Keys.Up:
+	//			case Keys.Left:
+	//			case Keys.Right:
+					return false;
+				default:
+					return base.ProcessDialogKey(keyData);
+			}
 		} 
 
 		private void DockFormPreview_SizeChanged(object sender, EventArgs e)
@@ -170,8 +166,7 @@ namespace standScripter
 			pictureBox1.Width  = w;
 			pictureBox1.Height = h;
 
-			
-			m_parent.formParent.m_blockList.SendPreviewInfo();
+			m_parent.m_blockList.SendPreviewInfo();
 		}
 
 		protected override string GetPersistString()
@@ -181,9 +176,9 @@ namespace standScripter
 
 		private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
 		{
-			if( e.Button == MouseButtons.Middle ) m_parent.formParent.m_blockList.PlayVoice();
-			if( e.Button == MouseButtons.Left ) m_parent.formParent.m_blockList.NextMessage(true);
-			if( e.Button == MouseButtons.Right ) m_parent.formParent.m_blockList.NextMessage(false);
+			if( e.Button == MouseButtons.Middle ) m_parent.m_blockList.PlayVoice();
+			if( e.Button == MouseButtons.Left ) m_parent.m_blockList.NextMessage(true);
+			if( e.Button == MouseButtons.Right ) m_parent.m_blockList.NextMessage(false);
 		}
 
 		private void DockFormPreview_FormClosing(object sender, FormClosingEventArgs e)

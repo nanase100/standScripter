@@ -1,6 +1,6 @@
 ﻿namespace standScripter
 {
-	partial class MainForm
+	partial class DockStandList
 	{
 		/// <summary>
 		/// 必要なデザイナー変数です。
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockStandList));
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.label1 = new System.Windows.Forms.Label();
@@ -190,39 +190,7 @@
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Visible = false;
-			// 
-			// funcStrCopyBtn3
-			// 
-			this.funcStrCopyBtn3.Location = new System.Drawing.Point(170, 261);
-			this.funcStrCopyBtn3.Name = "funcStrCopyBtn3";
-			this.funcStrCopyBtn3.Size = new System.Drawing.Size(74, 21);
-			this.funcStrCopyBtn3.TabIndex = 34;
-			this.funcStrCopyBtn3.Text = "汎用コビー3";
-			this.funcStrCopyBtn3.UseVisualStyleBackColor = true;
-			this.funcStrCopyBtn3.Visible = false;
-			this.funcStrCopyBtn3.Click += new System.EventHandler(this.funcStrCopyBtn3_Click);
-			// 
-			// funcStrCopyBtn2
-			// 
-			this.funcStrCopyBtn2.Location = new System.Drawing.Point(88, 261);
-			this.funcStrCopyBtn2.Name = "funcStrCopyBtn2";
-			this.funcStrCopyBtn2.Size = new System.Drawing.Size(74, 21);
-			this.funcStrCopyBtn2.TabIndex = 33;
-			this.funcStrCopyBtn2.Text = "汎用コビー2";
-			this.funcStrCopyBtn2.UseVisualStyleBackColor = true;
-			this.funcStrCopyBtn2.Visible = false;
-			this.funcStrCopyBtn2.Click += new System.EventHandler(this.funcStrCopyBtn2_Click);
-			// 
-			// funcStrCopyBtn1
-			// 
-			this.funcStrCopyBtn1.Location = new System.Drawing.Point(8, 261);
-			this.funcStrCopyBtn1.Name = "funcStrCopyBtn1";
-			this.funcStrCopyBtn1.Size = new System.Drawing.Size(74, 21);
-			this.funcStrCopyBtn1.TabIndex = 32;
-			this.funcStrCopyBtn1.Text = "汎用コビー1";
-			this.funcStrCopyBtn1.UseVisualStyleBackColor = true;
-			this.funcStrCopyBtn1.Visible = false;
-			this.funcStrCopyBtn1.Click += new System.EventHandler(this.funcStrCopyBtn1_Click);
+			
 			// 
 			// groupBox5
 			// 
@@ -835,6 +803,7 @@
 			this.オプション指定ToolStripMenuItem.Name = "オプション指定ToolStripMenuItem";
 			this.オプション指定ToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
 			this.オプション指定ToolStripMenuItem.Text = "オプション指定";
+			this.オプション指定ToolStripMenuItem.Click += new System.EventHandler(this.オプション指定ToolStripMenuItem_Click);
 			// 
 			// menuItemSub1
 			// 
@@ -905,7 +874,6 @@
 			// 
 			// toolStripMenuItem2
 			// 
-			this.toolStripMenuItem2.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 23);
 			this.toolStripMenuItem2.Text = "2";
@@ -918,7 +886,6 @@
 			// 
 			// toolStripMenuItem3
 			// 
-			this.toolStripMenuItem3.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
 			this.toolStripMenuItem3.Size = new System.Drawing.Size(240, 23);
 			this.toolStripMenuItem3.Text = "3";
@@ -940,6 +907,7 @@
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
+			this.LocationChanged += new System.EventHandler(this.MainForm_LocationChanged);
 			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
 			this.Move += new System.EventHandler(this.Form1_Move);
 			this.Resize += new System.EventHandler(this.Form1_Resize);

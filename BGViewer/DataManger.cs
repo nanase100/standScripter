@@ -150,7 +150,6 @@ namespace standScripter
 			{
 				m_childList.Add( tmp );
 			}
-
 		}
 	}
 	//-----------------------------------------------------------------------------------
@@ -170,8 +169,8 @@ namespace standScripter
 		public int									m_thumbnailWidth		{ set; get; }
 		public int									m_thumbnailHeight		{ set; get; }
 
-		public int m_subThumbnailWidth { set; get; }
-		public int m_subThumbnailHeight { set; get; }
+		public int m_subThumbnailWidth	{ set; get; }
+		public int m_subThumbnailHeight	{ set; get; }
 
 		public int m_summaryFontSize{ set; get; }
 		public int m_soundVolume	{ set; get; }
@@ -191,10 +190,10 @@ namespace standScripter
 
 		public static int m_optionStringCount = 5;
 
-		public string[] m_optionString { set; get; }
-		public string[] m_optionStringLv2 { set; get; }
-		public string[] m_optionStringLv3 { set; get; }
-		public string[] m_optionStringLv4 { set; get; }
+		public string[] m_optionString		{ set; get; }
+		public string[] m_optionStringLv2	{ set; get; }
+		public string[] m_optionStringLv3	{ set; get; }
+		public string[] m_optionStringLv4	{ set; get; }
 
 		public List<string> m_funcString { set; get; } = new List<string>();
 

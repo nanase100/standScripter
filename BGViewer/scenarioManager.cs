@@ -166,6 +166,9 @@ namespace standScripter
 		/// <param name="data"></param>
 		public void Save( string filePath, List<textBlockData> data)
 		{
+
+			bool isFirstBG = true;			//背景画像の最初の指定だけは SCENESTART_マクロになるため
+
 			string[] standPosStr = { "#520", "#521", "#522", "#523", "#524" };
 			using( var fp = new System.IO.StreamWriter(filePath,false,System.Text.Encoding.GetEncoding("shift_jis")) )
 			{
@@ -175,15 +178,22 @@ namespace standScripter
 					if( item.preProc != "" ) fp.WriteLine( item.preProc + Environment.NewLine );
 
 					//cg 全立ち絵削除命令の場合
-					if( item.bgFileName == "" && item.isStandClear == true )fp.WriteLine( "	cg" + Environment.NewLine + "	rdraw 20" + Environment.NewLine );
+					if( item.bgFileName == "" && item.isStandClear == true )fp.WriteLine( "	cg" + Environment.NewLine + "	rdraw 20" + Environment.NewLine +"	wait"	 + Environment.NewLine );
 
 					//背景トランジション切り替え
-					if( item.bgFileName != "" )
+					if( item.bgFileName != ""  && !isFirstBG )
 					{
-						fp.WriteLine("	%MsgBoxOff" + Environment.NewLine  );
-						fp.WriteLine("	wait 15" + Environment.NewLine  );
-						fp.WriteLine("	%Transition_BE bgblack 0" + Environment.NewLine  );
-						fp.WriteLine("	wait 60" + Environment.NewLine  );
+						 if( item.bgFileName.IndexOf("e_") == -1 && item.bgFileName.IndexOf("ev_") == -1 )
+						{
+							fp.WriteLine("	%MsgBoxOff" + Environment.NewLine  );
+							fp.WriteLine("	wait 15" + Environment.NewLine  );
+							fp.WriteLine("	%Transition_BE bgblack 0" + Environment.NewLine  );
+							fp.WriteLine("	wait 60" + Environment.NewLine  );
+						}
+						else
+						{
+							fp.WriteLine("	%Ev_sb " + item.bgFileName  + Environment.NewLine );
+						}
 					}
 
 					//立ち絵
@@ -216,9 +226,16 @@ namespace standScripter
 					//背景トランジション切り替え
 					if( item.bgFileName != "" )
 					{
-						fp.WriteLine("	%Transition_AF bgwipe06 " + item.bgFileName + Environment.NewLine );
-						fp.WriteLine("	wait 15"	+ Environment.NewLine );
-						fp.WriteLine("	%MsgBoxOn"	+ Environment.NewLine  );
+						if( isFirstBG == false )
+						{ 
+							if( item.bgFileName.IndexOf("e_") == -1 && item.bgFileName.IndexOf("ev_") == -1 )
+							{
+								fp.WriteLine("	%Transition_AF bgwipe06 " + item.bgFileName + Environment.NewLine );
+								fp.WriteLine("	wait 15"	+ Environment.NewLine );
+								fp.WriteLine("	%MsgBoxOn"	+ Environment.NewLine  );
+							}
+						}
+						if( isFirstBG == true ) isFirstBG = false;
 					}
 
 					//顔グラがある場合
@@ -267,8 +284,8 @@ namespace standScripter
 
 			string[]		scenarioByLine	= allScenario.Replace("\r","").Split('\n');
 
-			string buff			= "";
-			string nowStr		= "";
+			string			buff			= "";
+			string			nowStr			= "";
 			
 			while( nowLineNo < scenarioByLine.Length )
 			{
@@ -277,7 +294,7 @@ namespace standScripter
 				if( nullLineReg.IsMatch(nowStr) )														nowType = blockType.OTHER;
 				if( pcmReg.IsMatch(nowStr)	 || zenkakuReg.IsMatch(nowStr) )							nowType = blockType.MESSAGE;
 				if( deltandReg.IsMatch(nowStr)|| standReg.IsMatch(nowStr) || rdrawReg.IsMatch(nowStr) )	nowType = blockType.STAND;
-				if( bgReg.IsMatch(nowStr) )																nowType = blockType.BG;
+				if( bgReg.IsMatch(nowStr) && nowStr.IndexOf("SCENE_START") == -1 )						nowType = blockType.BG;
 				if( cgReg.IsMatch(nowStr) )																nowType = blockType.CG;
 				if( faceReg.IsMatch(nowStr) )															nowType = blockType.FACE;
 				if( transitionBEReg.IsMatch(nowStr) )													nowType = blockType.TRANSITION_BE;
@@ -485,6 +502,10 @@ namespace standScripter
 						if( result.Success ) { addData.textBlock = result.Groups[2].Value; }
 					}
 
+
+
+
+
 					m_toolBlockList.Add(addData);
 
 					var tmp2			= m_toolBlockList.Last();
@@ -498,6 +519,18 @@ namespace standScripter
 						result = regNullDel.Match(tmp2.preProc);
 						if( result.Success ) { tmp2.preProc = result.Groups[2].Value; }
 					}
+
+										//先頭のSCENE_STARTの場合、背景名を取り出す
+					if( tmp2.preProc != null )
+					{
+						Regex startBGReg = new Regex(@"SCENE_START (.*)", RegexOptions.Multiline );
+						result = startBGReg.Match( tmp2.preProc );
+						if( result.Success)
+						{
+							tmp2.bgFileName = result.Groups[1].Value.Replace("\r","");
+						}
+					}
+
 
 					//-------------------------
 					//最初以外の背景切り替えは「複数の命令行のフルセット+必要なら立ち絵追加」なので、preProcをコメント以外をクリアする
@@ -549,7 +582,6 @@ namespace standScripter
 					
 					//末尾の空白行削除
 					Regex regNullDel = new Regex(@"^(\r\n)*(.*?)(\r\n)+$",RegexOptions.Singleline);
-					Match result;
 
 					m_toolBlockList.Add(addData);
 					addData.textBlock = "";
