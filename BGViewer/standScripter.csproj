@@ -149,6 +149,12 @@
     <Compile Include="DockFormPreview.Designer.cs">
       <DependentUpon>DockFormPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="DockFormScriptText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockFormScriptText.Designer.cs">
+      <DependentUpon>DockFormScriptText.cs</DependentUpon>
+    </Compile>
     <Compile Include="DockStandList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     <EmbeddedResource Include="DockFormPreview.resx">
       <DependentUpon>DockFormPreview.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockFormScriptText.resx">
+      <DependentUpon>DockFormScriptText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DockStandList.resx">
       <DependentUpon>DockStandList.cs</DependentUpon>

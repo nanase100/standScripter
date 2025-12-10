@@ -19,6 +19,8 @@ namespace standScripter
 		public DockFormPreview			m_preview		= null;
 		public DockFormBlockList		m_blockList		= null;
 
+		public DockFormScriptText		m_scriptText	= null;
+
 		public string					m_nowEditScriptName = "";
 			
 
@@ -62,6 +64,9 @@ namespace standScripter
 			m_blockList.SetActiveScript( scriptFileName );
 			m_blockList.DataGrdiView(true);
 
+			m_scriptText.SetScriptText(m_scenarioManager.allScenario);
+			m_scriptText.SetScriptText2(m_scenarioManager.allScenario);
+
 
 			this.Text =  "立絵仮打ツール：" + scriptFileName;
 
@@ -98,6 +103,10 @@ namespace standScripter
 			m_blockList				= new DockFormBlockList();
 			m_blockList.m_parent	= this;
 			m_blockList.Text		= "スクリプト内容";
+
+			m_scriptText			= new DockFormScriptText();
+			m_scriptText.m_parent	= this;
+			m_scriptText.Text		= "スクリプトテキスト";
 
 			m_standList				= new DockStandList();
 			m_standList.m_parent	= this;
@@ -193,6 +202,8 @@ namespace standScripter
 				m_preview.Show(dockPanel1);
 				m_blockList.Show(dockPanel1);
 
+				m_scriptText.Show(dockPanel1);
+
 			}
 			catch(Exception ee)
 			{
@@ -201,6 +212,8 @@ namespace standScripter
 				m_scriptList.Show(dockPanel1);
 				m_preview.Show(dockPanel1);
 				m_blockList.Show(dockPanel1);
+
+				m_scriptText.Show(dockPanel1);
 			}
 		}
  
@@ -219,6 +232,7 @@ namespace standScripter
 				case "DockFormScriptListStr":	return m_scriptList;
 				case "DockFormPreviewStr":		return m_preview;	
 				case "MainForm":				return m_standList;	
+				case "DockFormScriptTextStr":	return m_scriptText;
 			}
 
 			return null;
@@ -233,6 +247,7 @@ namespace standScripter
 			m_scriptList?.Dispose();
 			m_preview?.Dispose();
 			m_standList?.Dispose();
+			m_scriptText?.Dispose();
 		}
 
 
@@ -252,6 +267,10 @@ namespace standScripter
 			if(m_scriptList.IsHidden) { m_scriptList.Show(); } else { m_scriptList.Hide(); } // Form2 の再表、非表示切り替え
 		}
 
+		private void スクリプトの表示非表示ToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			if (m_scriptText.IsHidden) { m_scriptText.Show(); } else { m_scriptText.Hide(); } // Form2 の再表、非表示切り替え
+		}
 
 		private void FormParent_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -293,6 +312,7 @@ namespace standScripter
 			this.Text =  "立絵仮打ツール：" + m_nowEditScriptName + (m_isEdit?"※":"");
 				
 		}
-		
-	}
+
+
+    }
 }

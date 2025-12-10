@@ -36,6 +36,7 @@
 			this.スクリプトの表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ファイル一覧の表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ビューワーの表示非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.スクリプトの表示非表示ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -57,7 +58,6 @@
 			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
-
 			// 
 			// dockParentMenu
 			// 
@@ -65,7 +65,8 @@
             this.プレビューの表示非表示ToolStripMenuItem,
             this.スクリプトの表示非表示ToolStripMenuItem,
             this.ファイル一覧の表示非表示ToolStripMenuItem,
-            this.ビューワーの表示非表示ToolStripMenuItem});
+            this.ビューワーの表示非表示ToolStripMenuItem,
+            this.スクリプトの表示非表示ToolStripMenuItem1});
 			this.dockParentMenu.Name = "dockParentMenu";
 			this.dockParentMenu.Size = new System.Drawing.Size(150, 20);
 			this.dockParentMenu.Text = "各ウインドウの表示切り替え";
@@ -97,6 +98,13 @@
 			this.ビューワーの表示非表示ToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.ビューワーの表示非表示ToolStripMenuItem.Text = "ビューワーの表示/非表示";
 			this.ビューワーの表示非表示ToolStripMenuItem.Click += new System.EventHandler(this.ビューワーの表示非表示ToolStripMenuItem_Click);
+			// 
+			// スクリプトの表示非表示ToolStripMenuItem1
+			// 
+			this.スクリプトの表示非表示ToolStripMenuItem1.Name = "スクリプトの表示非表示ToolStripMenuItem1";
+			this.スクリプトの表示非表示ToolStripMenuItem1.Size = new System.Drawing.Size(207, 22);
+			this.スクリプトの表示非表示ToolStripMenuItem1.Text = "スクリプトの表示/非表示";
+			this.スクリプトの表示非表示ToolStripMenuItem1.Click += new System.EventHandler(this.スクリプトの表示非表示ToolStripMenuItem1_Click);
 			// 
 			// FormParent
 			// 
@@ -130,5 +138,6 @@
 		private System.Windows.Forms.ToolStripMenuItem スクリプトの表示非表示ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ファイル一覧の表示非表示ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ビューワーの表示非表示ToolStripMenuItem;
-	}
+        private System.Windows.Forms.ToolStripMenuItem スクリプトの表示非表示ToolStripMenuItem1;
+    }
 }

@@ -945,6 +945,9 @@ namespace standScripter
 			{
 				var tmp = m_parent.m_blockList.m_messageBlockGridList[rowNo];
 				m_parent.m_preview.SetPreviewData( tmp.bgFileName, tmp.faceFileName, tmp.standDatas, tmp.textBlock );
+
+				m_parent.m_scriptText.SearchScroll(tmp.textBlock);
+
 			}
 		}
 
