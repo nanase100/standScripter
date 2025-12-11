@@ -26,7 +26,6 @@ namespace standScripter
 
 		public void SetPreviewData( string bgName, string faceName, List<textStandData> standList, string message = "" )
 		{
-
 			//this.Refresh();
 
 			//Graphics gs = pictureBox1.CreateGraphics();

@@ -75,7 +75,11 @@ namespace standScripter
 			int vol = m_parent.m_dataManager.m_soundVolume;
 
 			trackBar1.Value = vol;
-　
+
+
+			dataGridView1.m_callProc = CustomCopyToClipboard;
+
+
 		}
 
 		/// <summary>
@@ -602,9 +606,9 @@ namespace standScripter
 				//立ち絵の左右
 				case Keys.W:		ChangeStandPos(posType.EMPTY,	isGuardPosDup);			break;
 				case Keys.A:		ChangeStandPos(posType.H3_LEFT,	isGuardPosDup);			break;
-				case Keys.S:		if( (e.Modifiers&Keys.ControlKey)==Keys.ControlKey) ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
+				case Keys.S:		ChangeStandPos(posType.H2_LEFT,	isGuardPosDup);			break;
 				case Keys.D:		ChangeStandPos(posType.CENTER,	isGuardPosDup);			break;
-				case Keys.F:		if(e.Control == true) textBox1.Focus(); else ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
+				case Keys.F:		ChangeStandPos(posType.H2_RIGHT,isGuardPosDup);			break;
 				case Keys.G:		ChangeStandPos(posType.H3_RIGHT,isGuardPosDup);			break;
 
 				//ダブルクリック以外での呼び出し
@@ -1205,7 +1209,11 @@ namespace standScripter
 						{
 							m_copySrcStand = new textStandData(m_messageBlockGridList[rowIndex].standDatas[i]);
 							m_copySrcStand.isContinue = false;
-							if( isClear ) m_messageBaseData[rowIndex].standDatas.Remove(m_messageBaseData[rowIndex].standDatas[i]);
+							if( isClear )
+							{
+								if(m_messageBaseData.Count > rowIndex && m_messageBaseData[rowIndex].standDatas.Count > i )
+									m_messageBaseData[rowIndex].standDatas.Remove(m_messageBaseData[rowIndex].standDatas[i]);
+							}
 							break;
 						}
 					}
@@ -1388,7 +1396,6 @@ namespace standScripter
 
 
 
-
 		private void dataGridView1_DragOver(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.Move;
@@ -1398,7 +1405,8 @@ namespace standScripter
 
 		private void dataGridView1_MouseMove(object sender, MouseEventArgs e)
 		{
-			if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
+			//if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
 			{
 				DragDropEffects dropEffect = dataGridView1.DoDragDrop(dataGridView1.Rows[m_dragSrcRow],  DragDropEffects.Move);
 			}
@@ -1406,7 +1414,8 @@ namespace standScripter
 
 		private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
 		{
-			if( e.Button == MouseButtons.Right )
+			//if( e.Button == MouseButtons.Right )
+			if (e.Button == MouseButtons.Left)
 			{
 				var clickCell = dataGridView1.HitTest (e.X, e.Y);
 				m_dragSrcRow = clickCell.RowIndex/2;
@@ -1440,6 +1449,67 @@ namespace standScripter
 		{
 			
 		}
+
+
+
+		private bool CustomCopyToClipboard(ref Message msg, Keys keyData)
+		{
+			// 選択されたセルや行のデータを取得し、クリップボードに設定する処理を記述します。
+			// 例: 選択されたセルの値を取得し、タブ区切りで結合してクリップボードにコピー
+			// 詳細は、Microsoft Learn のドキュメント などを参照してください。
+
+			// 以下のコードは一例です
+			/*
+			var selectedCells = SelectedCells;
+			if (selectedCells.Count > 0)
+			{
+				// 独自のコピーロジック...
+				System.Diagnostics.Debug.WriteLine("カスタムコピー処理が実行されました。");
+
+				// クリップボードへの書き込み例
+				// Clipboard.SetText("カスタムコピーデータ");
+			}
+			*/
+
+			
+			// Ctrl+Cが押されたかチェック
+			if (keyData == (Keys.Control | Keys.C))
+			{
+				// ここに独自のコピー処理を実装します
+				//CustomCopyToClipboard();
+				CopyCell();
+
+				// デフォルトの処理をキャンセルするために true を返します
+				return true;
+			}
+
+			// Ctrl+Xが押されたかチェック
+			if (keyData == (Keys.Control | Keys.X))
+			{
+				CutCell();
+				return true;
+			}
+
+			// Ctrl+Cが押されたかチェック
+			if (keyData == (Keys.Control | Keys.V))
+			{
+				PasteCell();
+				return true;
+			}
+
+
+			if (keyData == (Keys.Control | Keys.F))
+			{
+				textBox1.Focus();
+				return true;
+			}
+
+
+			return false;
+
+		}
+
+
 
 
 
@@ -1519,5 +1589,35 @@ namespace standScripter
         /// <returns></returns>
         public override string ToString() { return Name; }
     }
+
+
+
+
+
+
+
+
+
+	public delegate bool CustomPCmdKey(ref Message msg, Keys keyData );
+
+
+	public class MyDataGridView : DataGridView
+	{
+
+		public CustomPCmdKey m_callProc;
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+
+
+			if( m_callProc(ref msg,keyData)  == true ) return true;
+
+
+			// 他のキーボード操作は基本クラスのメソッドに任せます
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		
+	}
 
 }

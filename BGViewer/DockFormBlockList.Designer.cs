@@ -30,7 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockFormBlockList));
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new standScripter.MyDataGridView();
 			this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.BG = new System.Windows.Forms.DataGridViewImageColumn();
 			this.Bunk1 = new System.Windows.Forms.DataGridViewImageColumn();
@@ -53,6 +53,7 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.button8 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.chBoxGuardPosDup = new System.Windows.Forms.CheckBox();
 			this.trackBar1 = new System.Windows.Forms.TrackBar();
@@ -62,7 +63,6 @@
 			this.この立絵指定を削除するToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.button8 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -82,6 +82,7 @@
 			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.message,
@@ -96,6 +97,7 @@
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.Enabled = false;
 			this.dataGridView1.Location = new System.Drawing.Point(12, 64);
+			this.dataGridView1.MultiSelect = false;
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.RowHeadersVisible = false;
 			this.dataGridView1.RowTemplate.Height = 21;
@@ -310,6 +312,15 @@
 			this.panel1.TabIndex = 16;
 			this.panel1.Visible = false;
 			// 
+			// button8
+			// 
+			this.button8.Location = new System.Drawing.Point(211, 71);
+			this.button8.Name = "button8";
+			this.button8.Size = new System.Drawing.Size(63, 32);
+			this.button8.TabIndex = 20;
+			this.button8.Text = "ヘルプ";
+			this.button8.UseVisualStyleBackColor = true;
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -391,15 +402,6 @@
 			this.toolStripMenuItem2.Text = "立絵全体削除命令を入れる/外す";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
 			// 
-			// button8
-			// 
-			this.button8.Location = new System.Drawing.Point(211, 71);
-			this.button8.Name = "button8";
-			this.button8.Size = new System.Drawing.Size(63, 32);
-			this.button8.TabIndex = 20;
-			this.button8.Text = "ヘルプ";
-			this.button8.UseVisualStyleBackColor = true;
-			// 
 			// DockFormBlockList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -454,7 +456,6 @@
 		private System.Windows.Forms.DataGridViewImageColumn Bunk1;
 		private System.Windows.Forms.DataGridViewImageColumn BG;
 		private System.Windows.Forms.DataGridViewTextBoxColumn message;
-		private System.Windows.Forms.DataGridView dataGridView1;
 		private System.Windows.Forms.DataGridViewImageColumn colFace;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.IO.FileSystemWatcher fileSystemWatcher1;
@@ -469,5 +470,6 @@
 		private System.Windows.Forms.TrackBar trackBar1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button button8;
-	}
+        private MyDataGridView dataGridView1;
+    }
 }

@@ -37,6 +37,7 @@
 			this.label36 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox8.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			this.SuspendLayout();
@@ -137,11 +138,21 @@
 			this.numericUpDown1.Size = new System.Drawing.Size(42, 19);
 			this.numericUpDown1.TabIndex = 9;
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Location = new System.Drawing.Point(249, 12);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(222, 151);
+			this.groupBox1.TabIndex = 10;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "プレビューに関する設定";
+			// 
 			// FormConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.groupBox8);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
@@ -165,5 +176,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
