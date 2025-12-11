@@ -145,7 +145,7 @@ namespace standScripter
 
 		private void FormParent_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			//StockPos();
+			StockPos();
 		}
 
 		private void FormParent_FormClosing(object sender, FormClosingEventArgs e)
