@@ -65,12 +65,12 @@ namespace standScripter
 			}
 
 			//メッセージウインドウかわり
+			int alpha = m_parent.m_dataManager.m_previewWindowalpha * 255 / 100;
 			Rectangle mesWnd = new Rectangle(200,520,900,200);
-			Brush fillB = new SolidBrush(Color.FromArgb(192,64,64,64));
+			Brush fillB = new SolidBrush(Color.FromArgb(alpha, m_parent.m_dataManager.m_previewWindowColor.R, m_parent.m_dataManager.m_previewWindowColor.G, m_parent.m_dataManager.m_previewWindowColor.B));
 			gs.FillRectangle(fillB,mesWnd);
 
-
-			//顔描画
+			//顔グラ描画
 			if( faceName!="")
 			{
 				Bitmap tmpBmp = null;
@@ -90,8 +90,11 @@ namespace standScripter
 			//フォントオブジェクトの作成
 			Font fnt = new Font("MS UI Gothic", 22);
 			//文字列を表示
+			Color fontColor = Color.FromArgb(255, m_parent.m_dataManager.m_previewTextColor.R, m_parent.m_dataManager.m_previewTextColor.G, m_parent.m_dataManager.m_previewTextColor.B);
+			var brs = new SolidBrush(fontColor );
 			gs.DrawString(message, fnt, System.Drawing.Brushes.Black, 200+2, 550+2);
-			gs.DrawString(message, fnt, System.Drawing.Brushes.White, 200, 550);
+			//gs.DrawString(message, fnt, System.Drawing.Brushes.White, 200, 550);
+			gs.DrawString(message, fnt, brs, 200, 550);
 
 			Graphics gsMain = pictureBox1.CreateGraphics();
 			gsMain.DrawImage(bmp,0,0,pictureBox1.Width,pictureBox1.Height);

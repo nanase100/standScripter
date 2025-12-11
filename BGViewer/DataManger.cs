@@ -211,12 +211,28 @@ namespace standScripter
 		public int m_showTabLv			{ set; get; } = 3;
 		public int m_showTabStrCount	{ set; get; } = -1;
 
+
+
+
+		//プレビュー関連のコンフィグ
+		public Color m_previewWindowColor { set; get; }
+		public Color m_previewTextColor { set; get; }
+		public int m_previewWindowalpha { set; get; }
+
+
+
+
 		public readJsonType1 jsonData	{ set; get; }
 
 		public int GetOptionStringCount()
 		{
 			return m_optionStringCount;
 		}
+
+
+
+
+
 
 		public DataManger()
 		{
@@ -249,6 +265,10 @@ namespace standScripter
 			m_optionStringLv3		= new string[10];
 			m_optionStringLv4		= new string[10];
 
+			m_previewWindowalpha	= 100;
+			m_previewWindowColor	= Color.FromArgb(0, 0, 0);
+			m_previewTextColor		= Color.FromArgb(255, 255, 255);
+
 			for (int i = 0; i < 10; i++)
 			{
 				m_optionStringLv2[i] = "";
@@ -261,7 +281,6 @@ namespace standScripter
 			m_width			= 600;
 			m_height		= 400;
 			m_splitSize		= 100;
-
 
 			m_toolOption = new List<int>
 			{
@@ -302,7 +321,7 @@ namespace standScripter
 				jsonData = JsonConvert.DeserializeObject<readJsonType1>(File.ReadAllText(settingFilePath));
 				//jsonData.Create();
 
-
+				
 				m_gameDir				= jsonData.ゲームフォルダ;
 				dockingBasePos			= new Rectangle(jsonData.ドッキングベース座標[0],jsonData.ドッキングベース座標[1],jsonData.ドッキングベース座標[2],jsonData.ドッキングベース座標[3]);
 				

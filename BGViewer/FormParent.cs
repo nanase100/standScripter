@@ -129,10 +129,8 @@ namespace standScripter
 		/// </summary>
 		public void StockPos()
 		{
-
 			if (this.WindowState == FormWindowState.Normal)
 			{
-				
 				m_dataManager.dockingBasePos = new Rectangle( this.Left,this.Top, this.Width, this.Height );
 			}
 			else
@@ -313,6 +311,11 @@ namespace standScripter
 				
 		}
 
-
+        private void コンフィグToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+			var formConfig = new FormConfig( m_dataManager );
+			formConfig.ShowDialog();
+			formConfig.Dispose();
+		}
     }
 }

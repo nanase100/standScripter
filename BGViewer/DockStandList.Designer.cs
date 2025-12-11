@@ -190,7 +190,27 @@
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Visible = false;
-			
+			// 
+			// funcStrCopyBtn3
+			// 
+			this.funcStrCopyBtn3.Location = new System.Drawing.Point(176, 323);
+			this.funcStrCopyBtn3.Name = "funcStrCopyBtn3";
+			this.funcStrCopyBtn3.Size = new System.Drawing.Size(75, 23);
+			this.funcStrCopyBtn3.TabIndex = 0;
+			// 
+			// funcStrCopyBtn2
+			// 
+			this.funcStrCopyBtn2.Location = new System.Drawing.Point(95, 323);
+			this.funcStrCopyBtn2.Name = "funcStrCopyBtn2";
+			this.funcStrCopyBtn2.Size = new System.Drawing.Size(75, 23);
+			this.funcStrCopyBtn2.TabIndex = 1;
+			// 
+			// funcStrCopyBtn1
+			// 
+			this.funcStrCopyBtn1.Location = new System.Drawing.Point(14, 323);
+			this.funcStrCopyBtn1.Name = "funcStrCopyBtn1";
+			this.funcStrCopyBtn1.Size = new System.Drawing.Size(75, 23);
+			this.funcStrCopyBtn1.TabIndex = 2;
 			// 
 			// groupBox5
 			// 
@@ -801,7 +821,7 @@
             this.menuItemSub7,
             this.ToolStripMenuItem8});
 			this.オプション指定ToolStripMenuItem.Name = "オプション指定ToolStripMenuItem";
-			this.オプション指定ToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+			this.オプション指定ToolStripMenuItem.Size = new System.Drawing.Size(86, 20);
 			this.オプション指定ToolStripMenuItem.Text = "オプション指定";
 			this.オプション指定ToolStripMenuItem.Click += new System.EventHandler(this.オプション指定ToolStripMenuItem_Click);
 			// 
@@ -874,6 +894,7 @@
 			// 
 			// toolStripMenuItem2
 			// 
+			this.toolStripMenuItem2.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 23);
 			this.toolStripMenuItem2.Text = "2";
@@ -886,11 +907,12 @@
 			// 
 			// toolStripMenuItem3
 			// 
+			this.toolStripMenuItem3.Font = new System.Drawing.Font("Yu Gothic UI", 9F);
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
 			this.toolStripMenuItem3.Size = new System.Drawing.Size(240, 23);
 			this.toolStripMenuItem3.Text = "3";
 			// 
-			// MainForm
+			// DockStandList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -901,7 +923,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Name = "MainForm";
+			this.Name = "DockStandList";
 			this.Text = "立絵仮打ツール：GraphichTool";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
@@ -1007,6 +1029,6 @@
 		private System.Windows.Forms.Button funcStrCopyBtn3;
 		private System.Windows.Forms.Button funcStrCopyBtn2;
 		private System.Windows.Forms.Button funcStrCopyBtn1;
-	}
+    }
 }
 

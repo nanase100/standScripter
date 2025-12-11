@@ -161,6 +161,12 @@
     <Compile Include="DockStandList.Designer.cs">
       <DependentUpon>DockStandList.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormConfig.Designer.cs">
+      <DependentUpon>FormConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormGVPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -207,6 +213,9 @@
     <EmbeddedResource Include="DockStandList.resx">
       <DependentUpon>DockStandList.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormConfig.resx">
+      <DependentUpon>FormConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormGVPreview.resx">
       <DependentUpon>FormGVPreview.cs</DependentUpon>

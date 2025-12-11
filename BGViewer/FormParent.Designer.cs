@@ -113,6 +113,7 @@
 			this.コンフィグToolStripMenuItem.Name = "コンフィグToolStripMenuItem";
 			this.コンフィグToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
 			this.コンフィグToolStripMenuItem.Text = "コンフィグ";
+			this.コンフィグToolStripMenuItem.Click += new System.EventHandler(this.コンフィグToolStripMenuItem_Click);
 			// 
 			// FormParent
 			// 
